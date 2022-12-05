@@ -50,6 +50,8 @@ Application::~Application() {
 
 void Application::run() {
   while (!glfwWindowShouldClose(self->window)) {
+    if (glfwGetKey(self->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+      glfwSetWindowShouldClose(self->window, true);
     render();
 
     glfwSwapBuffers(self->window);
