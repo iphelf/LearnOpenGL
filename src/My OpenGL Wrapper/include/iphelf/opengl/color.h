@@ -1,3 +1,5 @@
+#pragma once
+
 namespace iphelf::opengl {
 
 struct Color {
@@ -12,10 +14,7 @@ struct Color {
   static const Color Black;
   static const Color White;
   static const Color DarkGreenBluish;
+  static const Color Orange;
 };
-
-const Color Color::Black{0.0f, 0.0f, 0.0f, 1.0f};
-const Color Color::White{1.0f, 1.0f, 1.0f, 1.0f};
-const Color Color::DarkGreenBluish{0.2f, 0.3f, 0.3f, 1.0f};
 
 }

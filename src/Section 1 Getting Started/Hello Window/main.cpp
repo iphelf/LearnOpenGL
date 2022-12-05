@@ -1,5 +1,14 @@
-#include <iphelf/opengl/window.h>
+#include <iphelf/opengl/application.h>
+
+class HelloWindow : public iphelf::opengl::Application {
+  void render() override {
+    clear(iphelf::opengl::Color::DarkGreenBluish);
+  }
+ public:
+  HelloWindow() : iphelf::opengl::Application(800, 600, "Hello Window") {}
+};
 
 int main() {
-  iphelf::opengl::Window(800, 600, "Hello Window").run();
+  HelloWindow application;
+  application.run();
 }
