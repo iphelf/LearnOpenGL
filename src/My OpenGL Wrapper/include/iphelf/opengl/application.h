@@ -1,14 +1,16 @@
 #pragma once
 
 #include <memory>
-#include "vertices.h"
+
 #include "program.h"
+#include "shapearray.h"
 
 namespace iphelf::opengl {
 
 class Application {
   struct Impl;
   std::unique_ptr<Impl> self;
+
  public:
   Application(int width, int height, const std::string &title);
   virtual ~Application();
@@ -24,11 +26,18 @@ class Application {
   // things that clients want to do
 
   // build stuff
-  static VertexArrayBuilder build_vertex_array();
+
+  template <VertexIndexSet T>
+  static ShapeArrayBuilder<T> build_shape_array(
+      const std::initializer_list<Vec3> &vertices);
+
+  static ShapeArrayBuilder<Shapes::Triangle> build_triangle_array(
+      const std::initializer_list<Vec3> &vertices);
+
   static ProgramBuilder build_program();
 
   // render stuff
   static void clear(Color color);
 };
 
-} // opengl
+}  // namespace iphelf::opengl

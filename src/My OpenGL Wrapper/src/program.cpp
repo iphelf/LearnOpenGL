@@ -1,8 +1,10 @@
 #include <iphelf/opengl/program.h>
-#include "shader.h"
-#include "gl/vertices_impl.h"
-#include "gl/program_impl.h"
+
 #include <iostream>
+
+#include "gl/program_impl.h"
+#include "gl/vertices_impl.h"
+#include "shader.h"
 
 namespace iphelf::opengl {
 
@@ -27,8 +29,8 @@ ProgramBuilder::ProgramBuilder() : self(std::make_unique<Impl>()) {}
 
 ProgramBuilder::~ProgramBuilder() = default;
 
-ProgramBuilder &ProgramBuilder::set_vertex_shader(int vertex_size) {
-  self->vertex_shader = std::make_unique<VertexShader>(vertex_size);
+ProgramBuilder &ProgramBuilder::set_vertex_shader() {
+  self->vertex_shader = std::make_unique<VertexShader>();
   return *this;
 }
 
@@ -39,9 +41,7 @@ ProgramBuilder &ProgramBuilder::set_fragment_shader(Color color) {
 
 Program ProgramBuilder::build() {
   return Program(std::make_unique<Program::Impl>(
-      std::move(self->vertex_shader),
-      std::move(self->fragment_shader)
-  ));
+      std::move(self->vertex_shader), std::move(self->fragment_shader)));
 }
 
-}
+}  // namespace iphelf::opengl

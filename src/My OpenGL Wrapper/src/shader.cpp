@@ -1,29 +1,19 @@
 #include "shader.h"
+
 #include <glad/gl.h>
+
 #include <iostream>
 
 namespace iphelf::opengl {
 
-VertexShader::VertexShader(int vertex_size) {
-  if (vertex_size != 3 && vertex_size != 4)
-    throw std::runtime_error(
-        "Invalid vertex size: "
-            + std::to_string(vertex_size)
-            + "; must be either 3 or 4"
-    );
+VertexShader::VertexShader() {
   shader = glCreateShader(GL_VERTEX_SHADER);
   const char *vertex_shader_source =
-      vertex_size == 3
-      ? "#version 460 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main(){\n"
-        "  gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}"
-      : "#version 460 core\n"
-        "layout (location = 0) in vec4 aPos;\n"
-        "void main(){\n"
-        "  gl_Position = vec4(aPos.x, aPos.y, aPos.z, aPos.w);\n"
-        "}";
+      "#version 460 core\n"
+      "layout (location = 0) in vec3 aPos;\n"
+      "void main(){\n"
+      "  gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+      "}";
   glShaderSource(shader, 1, &vertex_shader_source, nullptr);
   glCompileShader(shader);
   GLint success;
@@ -37,9 +27,7 @@ VertexShader::VertexShader(int vertex_size) {
   }
 }
 
-VertexShader::~VertexShader() {
-  glDeleteShader(shader);
-}
+VertexShader::~VertexShader() { glDeleteShader(shader); }
 
 FragmentShader::FragmentShader(Color color) {
   shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -47,11 +35,9 @@ FragmentShader::FragmentShader(Color color) {
       "#version 460 core\n"
       "out vec4 FragColor;\n"
       "void main(){\n"
-      "  FragColor = vec4("
-          + std::to_string(color.r) + ", "
-          + std::to_string(color.g) + ", "
-          + std::to_string(color.b) + ", "
-          + std::to_string(color.a) + ");\n}";
+      "  FragColor = vec4(" +
+      std::to_string(color.r) + ", " + std::to_string(color.g) + ", " +
+      std::to_string(color.b) + ", " + std::to_string(color.a) + ");\n}";
   const char *s = fragment_shader_source.data();
   glShaderSource(shader, 1, &s, nullptr);
   glCompileShader(shader);
@@ -66,8 +52,6 @@ FragmentShader::FragmentShader(Color color) {
   }
 }
 
-FragmentShader::~FragmentShader() {
-  glDeleteShader(shader);
-}
+FragmentShader::~FragmentShader() { glDeleteShader(shader); }
 
-}
+}  // namespace iphelf::opengl

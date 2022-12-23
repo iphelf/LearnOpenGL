@@ -1,6 +1,8 @@
-#include <iphelf/opengl/application.h>
+// clang-format off
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+// clang-format on
+#include <iphelf/opengl/application.h>
 
 namespace iphelf::opengl {
 
@@ -12,9 +14,9 @@ struct Application::Impl {
   GLFWwindow *window{nullptr};
 };
 
-Application::Application(int width, int height, const std::string &title) : self(std::make_unique<Impl>()) {
-  if (!glfwInit())
-    throw std::runtime_error("Failed to initialize GLFW");
+Application::Application(int width, int height, const std::string &title)
+    : self(std::make_unique<Impl>()) {
+  if (!glfwInit()) throw std::runtime_error("Failed to initialize GLFW");
 
   // Create a GLFW window as current context
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -23,9 +25,9 @@ Application::Application(int width, int height, const std::string &title) : self
 #if __APPLE__
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-  self->window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
-  if (!self->window)
-    throw std::runtime_error("Failed to create GLFW window");
+  self->window =
+      glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+  if (!self->window) throw std::runtime_error("Failed to create GLFW window");
   glfwMakeContextCurrent(self->window);
 
   // Initialize OpenGL with GLAD
@@ -34,19 +36,15 @@ Application::Application(int width, int height, const std::string &title) : self
 
   // Setup OpenGL viewport inside the GLFW window
   auto framebuffer_size_callback = [](GLFWwindow *, int width, int height) {
-    glViewport(
-        Impl::padding_left, Impl::padding_bottom,
-        width - Impl::padding_left - Impl::padding_right,
-        height - Impl::padding_top - Impl::padding_bottom
-    );
+    glViewport(Impl::padding_left, Impl::padding_bottom,
+               width - Impl::padding_left - Impl::padding_right,
+               height - Impl::padding_top - Impl::padding_bottom);
   };
   framebuffer_size_callback(nullptr, width, height);
   glfwSetFramebufferSizeCallback(self->window, framebuffer_size_callback);
 }
 
-Application::~Application() {
-  glfwTerminate();
-}
+Application::~Application() { glfwTerminate(); }
 
 void Application::run() {
   while (!glfwWindowShouldClose(self->window)) {
@@ -61,17 +59,22 @@ void Application::run() {
 
 void Application::render() {}
 
-VertexArrayBuilder Application::build_vertex_array() {
-  return {};
+template <VertexIndexSet T>
+ShapeArrayBuilder<T> Application::build_shape_array(
+    const std::initializer_list<Vec3> &vertices) {
+  return {vertices};
 }
 
-ProgramBuilder Application::build_program() {
-  return {};
+ShapeArrayBuilder<Shapes::Triangle> Application::build_triangle_array(
+    const std::initializer_list<Vec3> &vertices) {
+  return build_shape_array<Shapes::Triangle>(vertices);
 }
+
+ProgramBuilder Application::build_program() { return {}; }
 
 void Application::clear(Color color) {
   glClearColor(color.r, color.g, color.b, color.a);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-} // opengl
+}  // namespace iphelf::opengl

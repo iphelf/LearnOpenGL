@@ -1,7 +1,7 @@
 add_library(iphelf-opengl
         src/application.cpp
         src/color.cpp
-        src/vertices.cpp
+        src/shapearray.cpp
         src/gl/vertices_impl.cpp
         src/program.cpp
         src/gl/program_impl.cpp
