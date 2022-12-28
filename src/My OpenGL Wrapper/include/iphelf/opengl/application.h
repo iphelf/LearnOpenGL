@@ -1,9 +1,10 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
 
 #include "program.h"
-#include "shapearray.h"
+#include "trianglearray.h"
 
 namespace iphelf::opengl {
 
@@ -20,24 +21,36 @@ class Application {
 
  private:
   // Render a single frame
-  virtual void render();
+  virtual void render() {}
 
  protected:
   // things that clients want to do
 
   // build stuff
 
-  template <VertexIndexSet T>
-  static ShapeArrayBuilder<T> build_shape_array(
-      const std::initializer_list<Vec3> &vertices);
+  template <int Dimension>
+  inline static TriangleArray create_triangle_array(
+      const std::vector<Triangle<Dimension>> &triangles,
+      const std::vector<int> &attribute_sizes = {Dimension}) {
+    return TriangleArray{triangles, attribute_sizes};
+  }
 
-  static ShapeArrayBuilder<Shapes::Triangle> build_triangle_array(
-      const std::initializer_list<Vec3> &vertices);
+  template <int Dimension>
+  inline static TriangleArray create_triangle_array(
+      const std::vector<Vertex<Dimension>> &vertices,
+      const std::vector<IndexedTriangle> &triangles,
+      const std::vector<int> &attribute_sizes = {Dimension}) {
+    return TriangleArray{vertices, triangles, attribute_sizes};
+  }
 
-  static ProgramBuilder build_program();
+  inline static Program create_program(
+      const std::filesystem::path &path_vertex_shader,
+      const std::filesystem::path &path_fragment_shader) {
+    return {path_vertex_shader, path_fragment_shader};
+  }
 
   // render stuff
-  static void clear(Color color);
+  static void clear(const Color &color);
 };
 
 }  // namespace iphelf::opengl

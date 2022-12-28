@@ -57,22 +57,7 @@ void Application::run() {
   }
 }
 
-void Application::render() {}
-
-template <VertexIndexSet T>
-ShapeArrayBuilder<T> Application::build_shape_array(
-    const std::initializer_list<Vec3> &vertices) {
-  return {vertices};
-}
-
-ShapeArrayBuilder<Shapes::Triangle> Application::build_triangle_array(
-    const std::initializer_list<Vec3> &vertices) {
-  return build_shape_array<Shapes::Triangle>(vertices);
-}
-
-ProgramBuilder Application::build_program() { return {}; }
-
-void Application::clear(Color color) {
+void Application::clear(const Color &color) {
   glClearColor(color.r, color.g, color.b, color.a);
   glClear(GL_COLOR_BUFFER_BIT);
 }

@@ -1,38 +1,31 @@
 #pragma once
 
-#include <memory>
+#include <filesystem>
 
 #include "color.h"
-#include "shapearray.h"
-#include "shapes.h"
+#include "trianglearray.h"
 
 namespace iphelf::opengl {
 
 class Program {
-  struct Impl;
-  std::unique_ptr<Impl> self;
-  friend class ProgramBuilder;
+  int shader_program = 0;
 
- public:
-  Program();
-  ~Program();
-  Program &operator=(Program &&other) noexcept;
-  explicit Program(std::unique_ptr<Impl> &&impl);
-  void render_wireframe(const ShapeArray &sa);
-  void render(const ShapeArray &sa);
-};
-
-class ProgramBuilder {
-  struct Impl;
-  std::unique_ptr<Impl> self;
-  ProgramBuilder();
   friend class Application;
 
+  Program(const std::filesystem::path &path_vertex_shader,
+          const std::filesystem::path &path_fragment_shader);
+
  public:
-  ~ProgramBuilder();
-  ProgramBuilder &set_vertex_shader();
-  ProgramBuilder &set_fragment_shader(Color color);
-  Program build();
+  Program() = default;
+  Program(const Program &) = delete;
+  Program &operator=(const Program &) = delete;
+  Program(Program &&other) noexcept;
+  Program &operator=(Program &&other) noexcept;
+  ~Program();
+
+  void with_uniform(const std::string &name, Color color) const;
+  void render(const TriangleArray &ta) const;
+  void render_wireframe(const TriangleArray &ta) const;
 };
 
 }  // namespace iphelf::opengl
