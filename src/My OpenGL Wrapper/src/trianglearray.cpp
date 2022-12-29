@@ -17,11 +17,8 @@ TriangleArray::TriangleArray(const std::vector<Triangle<Dimension>> &triangles,
     throw std::runtime_error(
         "Sum of `attribute_sizes` does not meet `Dimension`");
   std::map<Vertex<Dimension>, int> elementOfVertex;
-  for (auto &triangle : triangles) {
-    elementOfVertex.emplace(std::get<0>(triangle), 1);
-    elementOfVertex.emplace(std::get<1>(triangle), 1);
-    elementOfVertex.emplace(std::get<2>(triangle), 1);
-  }
+  for (const auto &triangle : triangles)
+    for (const auto &vertex : triangle) elementOfVertex.emplace(vertex, 1);
   std::vector<float> fields(elementOfVertex.size() * Dimension);
   std::vector<Element> elements(triangles.size() * 3);
   int cnt = 0;
@@ -30,11 +27,9 @@ TriangleArray::TriangleArray(const std::vector<Triangle<Dimension>> &triangles,
     std::copy_n(vertex.begin(), Dimension, fields.begin() + cnt * Dimension);
     ++cnt;
   }
-  for (std::size_t i = 0; i < triangles.size(); ++i) {
-    elements[i * 3 + 0] = elementOfVertex[std::get<0>(triangles[i])];
-    elements[i * 3 + 1] = elementOfVertex[std::get<1>(triangles[i])];
-    elements[i * 3 + 2] = elementOfVertex[std::get<2>(triangles[i])];
-  }
+  for (std::size_t i{0}; i < triangles.size(); ++i)
+    for (std::size_t j{0}; j < 3; ++j)
+      elements[i * 3 + j] = elementOfVertex[triangles[i][j]];
   init(attribute_sizes, fields, elements);
 }
 
@@ -55,11 +50,8 @@ TriangleArray::TriangleArray(const std::vector<Vertex<Dimension>> &vertices,
   for (std::size_t i{0}; i < vertices.size(); ++i)
     std::copy_n(vertices[i].begin(), Dimension, fields.begin() + i * Dimension);
   std::vector<Element> elements(triangles.size() * 3);
-  for (std::size_t i{0}; i < triangles.size(); ++i) {
-    elements[i * 3 + 0] = std::get<0>(triangles[i]);
-    elements[i * 3 + 1] = std::get<1>(triangles[i]);
-    elements[i * 3 + 2] = std::get<2>(triangles[i]);
-  }
+  for (std::size_t i{0}; i < triangles.size(); ++i)
+    for (std::size_t j{0}; j < 3; ++j) elements[i * 3 + j] = triangles[i][j];
   init(attribute_sizes, fields, elements);
 }
 
