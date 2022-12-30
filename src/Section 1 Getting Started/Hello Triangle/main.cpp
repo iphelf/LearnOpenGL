@@ -9,7 +9,7 @@ const auto path_vs_position = path_shaders / "position.v.glsl";
 const auto path_fs_orange = path_shaders / "orange.f.glsl";
 const auto path_fs_white = path_shaders / "white.f.glsl";
 
-class Shaders : public iphelf::opengl::Application {
+class HelloTriangle : public iphelf::opengl::Application {
   iphelf::opengl::Color background_color;
   iphelf::opengl::TriangleArray triangles_a;
   iphelf::opengl::TriangleArray triangles_b;
@@ -17,7 +17,7 @@ class Shaders : public iphelf::opengl::Application {
   iphelf::opengl::Program program_white;
 
  public:
-  Shaders() : iphelf::opengl::Application(800, 600, "Hello, Triangle") {
+  HelloTriangle() : iphelf::opengl::Application(800, 600, "Hello, Triangle") {
     background_color = iphelf::opengl::Color::DarkGreenBluish;
     triangles_a = create_triangle_array<2>(
         {
@@ -45,6 +45,6 @@ class Shaders : public iphelf::opengl::Application {
 };
 
 int main() {
-  Shaders application;
+  HelloTriangle application;
   application.run();
 }

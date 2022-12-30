@@ -5,68 +5,66 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
-#include <stdexcept>
 
 namespace iphelf::opengl {
 
-template <std::size_t Dimension>
-TriangleArray::TriangleArray(const std::vector<Triangle<Dimension>> &triangles,
-                             const std::vector<int> &attribute_sizes) {
-  if (Dimension !=
-      std::accumulate(attribute_sizes.begin(), attribute_sizes.end(), 0))
-    throw std::runtime_error(
-        "Sum of `attribute_sizes` does not meet `Dimension`");
-  std::map<Vertex<Dimension>, int> elementOfVertex;
-  for (const auto &triangle : triangles)
-    for (const auto &vertex : triangle) elementOfVertex.emplace(vertex, 1);
-  std::vector<float> fields(elementOfVertex.size() * Dimension);
-  std::vector<Element> elements(triangles.size() * 3);
+namespace {
+
+using Element = IndexedTriangle::Vertex;
+std::pair<std::vector<float>, std::vector<Element>> reduce(
+    std::size_t n_triangles, std::size_t dimension,
+    const std::span<const float> &fields) {
+  std::map<std::vector<float>, int> elementOfVertex;
+  for (std::size_t i{0}; i < n_triangles; ++i) {
+    auto triangle = std::span(fields.data() + i * dimension * 3, dimension * 3);
+    for (std::size_t j{0}; j < 3; ++j)
+      elementOfVertex.emplace(
+          std::vector<float>{triangle.data() + dimension * j,
+                             triangle.data() + dimension * (j + 1)},
+          1);
+  }
+  auto n_reduced_fields = elementOfVertex.size() * dimension;
+  std::vector<float> reduced_fields(n_reduced_fields);
+  auto n_elements = n_triangles * 3;
+  std::vector<Element> elements(n_elements);
   int cnt = 0;
   for (auto &[vertex, element] : elementOfVertex) {
     element = cnt;
-    std::copy_n(vertex.begin(), Dimension, fields.begin() + cnt * Dimension);
+    std::copy_n(vertex.begin(), dimension,
+                reduced_fields.data() + dimension * cnt);
     ++cnt;
   }
-  for (std::size_t i{0}; i < triangles.size(); ++i)
+  for (std::size_t i{0}; i < n_triangles; ++i) {
+    auto triangle = std::span(fields.data() + i * dimension * 3, dimension * 3);
+    //    auto triangle = fields + i * dimension * 3;
     for (std::size_t j{0}; j < 3; ++j)
-      elements[i * 3 + j] = elementOfVertex[triangles[i][j]];
-  init(attribute_sizes, fields, elements);
+      elements[i * 3 + j] = elementOfVertex[std::vector<float>{
+          triangle.data() + dimension * j,
+          triangle.data() + dimension * (j + 1)}];
+  }
+  return {std::move(reduced_fields), std::move(elements)};
 }
 
-template TriangleArray::TriangleArray(const std::vector<Triangle<2>> &triangles,
-                                      const std::vector<int> &attribute_sizes);
-template TriangleArray::TriangleArray(const std::vector<Triangle<5>> &triangles,
-                                      const std::vector<int> &attribute_sizes);
+}  // namespace
 
-template <std::size_t Dimension>
-TriangleArray::TriangleArray(const std::vector<Vertex<Dimension>> &vertices,
-                             const std::vector<IndexedTriangle> &triangles,
-                             const std::vector<int> &attribute_sizes) {
-  if (Dimension !=
-      std::accumulate(attribute_sizes.begin(), attribute_sizes.end(), 0))
-    throw std::runtime_error(
-        "Sum of `attribute_sizes` does not meet `Dimension`");
-  std::vector<float> fields(vertices.size() * Dimension);
-  for (std::size_t i{0}; i < vertices.size(); ++i)
-    std::copy_n(vertices[i].begin(), Dimension, fields.begin() + i * Dimension);
-  std::vector<Element> elements(triangles.size() * 3);
-  for (std::size_t i{0}; i < triangles.size(); ++i)
-    for (std::size_t j{0}; j < 3; ++j) elements[i * 3 + j] = triangles[i][j];
-  init(attribute_sizes, fields, elements);
+TriangleArray::TriangleArray(std::size_t n_triangles,
+                             const std::vector<int> &attribute_sizes,
+                             const std::span<const float> &fields) {
+  auto dimension = static_cast<std::size_t>(
+      std::accumulate(attribute_sizes.begin(), attribute_sizes.end(), 0));
+  auto [reduced_fields, elements] = reduce(n_triangles, dimension, fields);
+  init(attribute_sizes, reduced_fields, elements);
 }
 
-template TriangleArray::TriangleArray(
-    const std::vector<Vertex<2>> &vertices,
-    const std::vector<IndexedTriangle> &triangles,
-    const std::vector<int> &attribute_sizes);
-template TriangleArray::TriangleArray(
-    const std::vector<Vertex<5>> &vertices,
-    const std::vector<IndexedTriangle> &triangles,
-    const std::vector<int> &attribute_sizes);
+TriangleArray::TriangleArray(const std::vector<int> &attribute_sizes,
+                             const std::span<const float> &fields,
+                             const std::span<const Element> &elements) {
+  init(attribute_sizes, fields, elements);
+}
 
 void TriangleArray::init(const std::vector<int> &attribute_sizes,
-                         const std::vector<float> &fields,
-                         const std::vector<Element> &elements) {
+                         const std::span<const float> &fields,
+                         const std::span<const Element> &elements) {
   {
     auto vao{static_cast<GLuint>(vertex_array_object)};
     glGenVertexArrays(1, &vao);
@@ -134,5 +132,15 @@ TriangleArray &TriangleArray::operator=(TriangleArray &&other) noexcept {
   std::swap(size, other.size);
   return *this;
 }
+
+// Template instantiations for compile time check purpose only
+template struct GenericTriangle<Vertex<2>>;
+template struct GenericTriangle<Element>;
+template TriangleArray::TriangleArray(const std::vector<Triangle<2>> &triangles,
+                                      const std::vector<int> &attribute_sizes);
+template TriangleArray::TriangleArray(
+    const std::vector<Vertex<2>> &vertices,
+    const std::vector<IndexedTriangle> &triangles,
+    const std::vector<int> &attribute_sizes);
 
 }  // namespace iphelf::opengl

@@ -27,7 +27,7 @@ class Shaders : public iphelf::opengl::Application {
   iphelf::opengl::TriangleArray triangles_q1_white;
   iphelf::opengl::TriangleArray triangles_q1_black;
   iphelf::opengl::TriangleArray triangles_q2_orange;
-  iphelf::opengl::Program program_orange;
+  iphelf::opengl::Program program_uniform;
 
   iphelf::opengl::TriangleArray triangles_c_position;
   iphelf::opengl::Program program_position_as_color;
@@ -47,7 +47,7 @@ class Shaders : public iphelf::opengl::Application {
     triangles_q1_black = create_triangle_array<2>({
         {{0.25f, 0.5f}, {0.25f, 0.75f}, {0.75f, 0.75f}},
     });
-    program_orange = create_program(path_vs_position, path_fs_uniform);
+    program_uniform = create_program(path_vs_position, path_fs_uniform);
 
     // Second quarter
     triangles_q2_orange = create_triangle_array<2>(
@@ -85,12 +85,12 @@ class Shaders : public iphelf::opengl::Application {
   void render() override {
     clear(background_color);
 
-    program_orange.with_uniform("ourColor", iphelf::opengl::Color::White);
-    program_orange.render_wireframe(triangles_q1_white);
-    program_orange.with_uniform("ourColor", iphelf::opengl::Color::Black);
-    program_orange.render(triangles_q1_black);
-    program_orange.with_uniform("ourColor", iphelf::opengl::Color::Orange);
-    program_orange.render(triangles_q2_orange);
+    program_uniform.with_uniform("ourColor", iphelf::opengl::Color::White);
+    program_uniform.render_wireframe(triangles_q1_white);
+    program_uniform.with_uniform("ourColor", iphelf::opengl::Color::Black);
+    program_uniform.render(triangles_q1_black);
+    program_uniform.with_uniform("ourColor", iphelf::opengl::Color::Orange);
+    program_uniform.render(triangles_q2_orange);
 
     program_position_as_color.render(triangles_c_position);
 
