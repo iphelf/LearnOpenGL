@@ -57,6 +57,11 @@ void Application::run() {
   }
 }
 
+std::chrono::duration<float> Application::get_time() {
+  std::chrono::duration<float> seconds{static_cast<float>(glfwGetTime())};
+  return seconds;
+}
+
 void Application::clear(const Color &color) {
   glClearColor(color.r, color.g, color.b, color.a);
   glClear(GL_COLOR_BUFFER_BIT);

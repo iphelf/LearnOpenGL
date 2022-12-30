@@ -8,8 +8,11 @@ struct Color {
   float b;
   float a;
 
-  explicit Color(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f)
-      : r(r), g(g), b(b), a(a) {}
+  explicit Color(float intensity = 0.0f, float alpha = 1.0f)
+      : r{intensity}, g{intensity}, b{intensity}, a{alpha} {}
+
+  Color(float red, float green, float blue, float alpha = 1.0f)
+      : r(red), g(green), b(blue), a(alpha) {}
 
   static const Color Black;
   static const Color White;
@@ -17,4 +20,4 @@ struct Color {
   static const Color Orange;
 };
 
-}
+}  // namespace iphelf::opengl

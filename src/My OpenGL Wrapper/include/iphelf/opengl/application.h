@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <memory>
+#include <chrono>
 
 #include "program.h"
 #include "trianglearray.h"
@@ -48,6 +49,8 @@ class Application {
       const std::filesystem::path &path_fragment_shader) {
     return {path_vertex_shader, path_fragment_shader};
   }
+
+  static std::chrono::duration<float> get_time();
 
   // render stuff
   static void clear(const Color &color);

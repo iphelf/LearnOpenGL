@@ -1,5 +1,6 @@
 #include <iphelf/opengl/application.h>
 
+#include <cmath>
 #include <filesystem>
 
 const auto path_shaders = std::filesystem::current_path() / "shaders";
@@ -87,7 +88,8 @@ class Shaders : public iphelf::opengl::Application {
 
     program_uniform.with_uniform("ourColor", iphelf::opengl::Color::White);
     program_uniform.render_wireframe(triangles_q1_white);
-    program_uniform.with_uniform("ourColor", iphelf::opengl::Color::Black);
+    program_uniform.with_uniform(
+        "ourColor", {0, std::sin(get_time().count()) / 2.0f + 0.5f, 0});
     program_uniform.render(triangles_q1_black);
     program_uniform.with_uniform("ourColor", iphelf::opengl::Color::Orange);
     program_uniform.render(triangles_q2_orange);
