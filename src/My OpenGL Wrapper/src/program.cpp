@@ -38,27 +38,55 @@ Program::Program(const std::filesystem::path &path_vertex_shader,
   }
 }
 
-void Program::with_uniform(const std::string &name, Color color) const {
-  if (!shader_program) return;
+void Program::use() const {
+  if (!shader_program) throw std::runtime_error("Empty program is unusable");
+  glUseProgram(shader_program);
+}
+
+int Program::get_uniform_location(const std::string &name) const {
   auto location{glGetUniformLocation(shader_program, name.data())};
   if (location < 0)
     throw std::runtime_error("Uniform `" + name + "` not found in shaders");
-  glUseProgram(shader_program);
+  return location;
+}
+
+void Program::with_uniform(const std::string &name, Color color) const {
+  use();
+  auto location = get_uniform_location(name);
   glUniform4f(location, color.r, color.g, color.b, color.a);
 }
 
-void Program::render(const TriangleArray &ta) const {
-  if (!shader_program || !ta.vertex_array_object) return;
-  glUseProgram(shader_program);
-  glBindVertexArray(ta.vertex_array_object);
-  glDrawElements(GL_TRIANGLES, ta.size, GL_UNSIGNED_INT, nullptr);
-  glBindVertexArray(0);
-  glUseProgram(0);
+void Program::with_uniform(const std::string &name, int number) const {
+  use();
+  auto location = get_uniform_location(name);
+  glUniform1i(location, number);
 }
 
-void Program::render_wireframe(const TriangleArray &ta) const {
+void Program::bind_texture(const Texture &texture) const {
+  use();
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, texture.texture_object);
+}
+
+void Program::bind_texture(const std::string &name, int slot,
+                           const Texture &texture) const {
+  use();
+  if (slot < 0) throw std::runtime_error("Texture slot must be non-negative");
+  glActiveTexture(GL_TEXTURE0 + slot);
+  glBindTexture(GL_TEXTURE_2D, texture.texture_object);
+  with_uniform(name, slot);
+}
+
+void Program::render(const TriangleArray &texture_array) const {
+  if (!texture_array.vertex_array_object) return;
+  use();
+  glBindVertexArray(texture_array.vertex_array_object);
+  glDrawElements(GL_TRIANGLES, texture_array.size, GL_UNSIGNED_INT, nullptr);
+}
+
+void Program::render_wireframe(const TriangleArray &triangle_array) const {
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  render(ta);
+  render(triangle_array);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

@@ -1,10 +1,11 @@
 #pragma once
 
+#include <chrono>
 #include <filesystem>
 #include <memory>
-#include <chrono>
 
 #include "program.h"
+#include "texture.h"
 #include "trianglearray.h"
 
 namespace iphelf::opengl {
@@ -48,6 +49,13 @@ class Application {
       const std::filesystem::path &path_vertex_shader,
       const std::filesystem::path &path_fragment_shader) {
     return {path_vertex_shader, path_fragment_shader};
+  }
+
+  inline static Texture create_texture(
+      const std::filesystem::path &path_texture,
+      Texture::WrappingMode wrapping_mode = Texture::WrappingMode::Repeat,
+      Texture::FilterType filter_type = Texture::FilterType::Nearest) {
+    return {path_texture, wrapping_mode, filter_type};
   }
 
   static std::chrono::duration<float> get_time();
