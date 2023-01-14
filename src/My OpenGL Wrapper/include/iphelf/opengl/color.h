@@ -18,6 +18,7 @@ struct Color {
   static const Color White;
   static const Color DarkGreenBluish;
   static const Color Orange;
+  static const Color Yellow;
 };
 
 }  // namespace iphelf::opengl

@@ -1,6 +1,7 @@
 // clang-format off
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+#include <unordered_map>
 // clang-format on
 #include <iphelf/opengl/application.h>
 
@@ -11,6 +12,7 @@ struct Application::Impl {
   static const int padding_top = 0;
   static const int padding_right = 0;
   static const int padding_bottom = 0;
+  static const std::unordered_map<Key, int> gl_keys;
   GLFWwindow *window{nullptr};
 };
 
@@ -55,6 +57,40 @@ void Application::run() {
     glfwSwapBuffers(self->window);
     glfwPollEvents();
   }
+}
+
+const std::unordered_map<Key, int> Application::Impl::gl_keys{
+    {Key::MinusUnderscore, GLFW_KEY_MINUS},
+    {Key::EqualPlus, GLFW_KEY_EQUAL},
+    {Key::Up, GLFW_KEY_UP},
+    {Key::Down, GLFW_KEY_DOWN},
+    {Key::Left, GLFW_KEY_LEFT},
+    {Key::Right, GLFW_KEY_RIGHT},
+    {Key::Tab, GLFW_KEY_TAB},
+    {Key::_0, GLFW_KEY_0},
+    {Key::_1, GLFW_KEY_1},
+    {Key::_2, GLFW_KEY_2},
+    {Key::_3, GLFW_KEY_3},
+    {Key::_4, GLFW_KEY_4},
+    {Key::_5, GLFW_KEY_5},
+    {Key::_6, GLFW_KEY_6},
+    {Key::_7, GLFW_KEY_7},
+    {Key::_8, GLFW_KEY_8},
+    {Key::_9, GLFW_KEY_9},
+};
+
+bool Application::is_down(Key key) {
+  auto glfw_key = Impl::gl_keys.at(key);
+  bool pressed = glfwGetKey(self->window, glfw_key) == GLFW_PRESS;
+  return pressed;
+}
+
+bool Application::just_released(Key key) {
+  static std::unordered_map<Key, bool> key_pressed;
+  bool pressed_before = key_pressed[key];
+  bool pressed_now = is_down(key);
+  key_pressed[key] = pressed_now;
+  return pressed_before && !pressed_now;
 }
 
 std::chrono::duration<float> Application::get_time() {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include "color.h"
 
 namespace iphelf::opengl {
 
@@ -23,8 +24,8 @@ class Texture {
   friend class Program;
   friend class Application;
 
-  Texture(const std::filesystem::path &path_texture, WrappingMode wrapping_mode,
-          FilterType filter_type);
+  Texture(const std::filesystem::path &path_texture, FilterType filter_type,
+          WrappingMode wrapping_mode,Color border_color);
 
  public:
   Texture() = default;

@@ -12,6 +12,9 @@ namespace iphelf::opengl {
 Program::Program(const std::filesystem::path &path_vertex_shader,
                  const std::filesystem::path &path_fragment_shader) {
   auto read_file = [](const std::filesystem::path &path) {
+    if (!std::filesystem::is_regular_file(path))
+      throw std::runtime_error("Shader file \"" + path.string() +
+                               "\" does not exist.");
     std::ostringstream oss;
     oss << std::ifstream(path).rdbuf();
     return oss.str();
@@ -60,6 +63,12 @@ void Program::with_uniform(const std::string &name, int number) const {
   use();
   auto location = get_uniform_location(name);
   glUniform1i(location, number);
+}
+
+void Program::with_uniform(const std::string &name, float number) const {
+  use();
+  auto location = get_uniform_location(name);
+  glUniform1f(location, number);
 }
 
 void Program::bind_texture(const Texture &texture) const {

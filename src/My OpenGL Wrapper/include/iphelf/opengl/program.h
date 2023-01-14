@@ -29,6 +29,7 @@ class Program {
 
   void with_uniform(const std::string &name, Color color) const;
   void with_uniform(const std::string &name, int number) const;
+  void with_uniform(const std::string &name, float number) const;
   void bind_texture(const Texture &texture) const;
   void bind_texture(const std::string &name, int slot,
                     const Texture &texture) const;
