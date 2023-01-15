@@ -2,6 +2,7 @@
 #include <iphelf/opengl/program.h>
 
 #include <fstream>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -69,6 +70,13 @@ void Program::with_uniform(const std::string &name, float number) const {
   use();
   auto location = get_uniform_location(name);
   glUniform1f(location, number);
+}
+
+void Program::with_uniform(const std::string &name,
+                           const glm::mat4 &matrix) const {
+  use();
+  auto location = get_uniform_location(name);
+  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Program::bind_texture(const Texture &texture) const {

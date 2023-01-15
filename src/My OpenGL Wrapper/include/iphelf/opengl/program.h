@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <glm/fwd.hpp>
 
 #include "color.h"
 #include "texture.h"
@@ -30,6 +31,7 @@ class Program {
   void with_uniform(const std::string &name, Color color) const;
   void with_uniform(const std::string &name, int number) const;
   void with_uniform(const std::string &name, float number) const;
+  void with_uniform(const std::string &name, const glm::mat4 &matrix) const;
   void bind_texture(const Texture &texture) const;
   void bind_texture(const std::string &name, int slot,
                     const Texture &texture) const;

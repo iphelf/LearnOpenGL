@@ -7,4 +7,4 @@ add_library(iphelf-opengl
         src/texture.cpp)
 target_include_directories(iphelf-opengl PUBLIC include)
 target_link_libraries(iphelf-opengl
-        PRIVATE glfw OpenGL::GL glad stb_image)
+        PRIVATE glfw OpenGL::GL glad stb_image glm::glm)

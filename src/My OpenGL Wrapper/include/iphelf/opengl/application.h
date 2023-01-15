@@ -4,10 +4,10 @@
 #include <filesystem>
 #include <memory>
 
+#include "input.h"
 #include "program.h"
 #include "texture.h"
 #include "trianglearray.h"
-#include "input.h"
 
 namespace iphelf::opengl {
 
@@ -54,16 +54,15 @@ class Application {
 
   inline static Texture create_texture(
       const std::filesystem::path &path_texture,
-      Texture::WrappingMode wrapping_mode = Texture::WrappingMode::Repeat,
-      Color border_color=Color::Black,
-      Texture::FilterType filter_type = Texture::FilterType::Nearest) {
+      Texture::WrappingMode wrapping_mode = Texture::WrappingMode::ClampToEdge,
+      Color border_color = Color::Black,
+      Texture::FilterType filter_type = Texture::FilterType::Linear) {
     return {path_texture, filter_type, wrapping_mode, border_color};
   }
 
   inline static Texture create_texture(
       const std::filesystem::path &path_texture,
-      Texture::WrappingMode wrapping_mode,
-      Texture::FilterType filter_type) {
+      Texture::WrappingMode wrapping_mode, Texture::FilterType filter_type) {
     return {path_texture, filter_type, wrapping_mode, Color::Black};
   }
 
@@ -71,7 +70,7 @@ class Application {
   bool is_down(Key key);
   bool just_released(Key key);
 
-  // check time
+  // check time (in seconds)
   static std::chrono::duration<float> get_time();
 
   // render stuff
