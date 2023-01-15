@@ -1,8 +1,8 @@
 #pragma once
 
-namespace iphelf::opengl{
+namespace iphelf::opengl {
 
-enum class Key{
+enum class Key {
   MinusUnderscore,
   EqualPlus,
   Up,
@@ -20,6 +20,12 @@ enum class Key{
   _8,
   _9,
   _0,
+  O,
+  P,
+  W,
+  A,
+  S,
+  D,
 };
 
 }

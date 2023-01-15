@@ -49,6 +49,7 @@ Application::Application(int width, int height, const std::string &title)
 Application::~Application() { glfwTerminate(); }
 
 void Application::run() {
+  glEnable(GL_DEPTH_TEST);
   while (!glfwWindowShouldClose(self->window)) {
     if (glfwGetKey(self->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
       glfwSetWindowShouldClose(self->window, true);
@@ -77,6 +78,12 @@ const std::unordered_map<Key, int> Application::Impl::gl_keys{
     {Key::_7, GLFW_KEY_7},
     {Key::_8, GLFW_KEY_8},
     {Key::_9, GLFW_KEY_9},
+    {Key::O, GLFW_KEY_O},
+    {Key::P, GLFW_KEY_P},
+    {Key::W, GLFW_KEY_W},
+    {Key::A, GLFW_KEY_A},
+    {Key::S, GLFW_KEY_S},
+    {Key::D, GLFW_KEY_D},
 };
 
 bool Application::is_down(Key key) {
@@ -100,7 +107,7 @@ std::chrono::duration<float> Application::get_time() {
 
 void Application::clear(const Color &color) {
   glClearColor(color.r, color.g, color.b, color.a);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 }  // namespace iphelf::opengl
