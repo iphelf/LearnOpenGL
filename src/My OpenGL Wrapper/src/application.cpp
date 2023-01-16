@@ -9,8 +9,17 @@ namespace iphelf::opengl {
 
 struct Application::Impl {
   Window window;
-  explicit Impl(Window &&window) : window{std::move(window)} {}
+  static std::vector<CursorPosCallback>
+      cursor_pos_callbacks;  // rough workaround to eliminate capturing
+  std::chrono::duration<double> delta_time{};
+  explicit Impl(Window &&window) : window{std::move(window)} {
+    this->window.set_cursor_pos_callback([](GLFWwindow *, double x, double y) {
+      for (auto &callback : cursor_pos_callbacks) callback(x, y);
+    });
+  }
 };
+std::vector<Application::CursorPosCallback>
+    Application::Impl::cursor_pos_callbacks;
 
 Application::Application(int width, int height, const std::string &title)
     : self(std::make_unique<Impl>(Window{width, height, title})) {}
@@ -18,8 +27,12 @@ Application::Application(int width, int height, const std::string &title)
 Application::~Application() = default;
 
 void Application::run() {
+  std::chrono::duration<double> last_frame{-1.0 / 60.0};
   while (!self->window.should_close()) {
     if (self->window.is_down(Key::Escape)) self->window.set_should_close();
+    auto curr_frame = glfw().get_time();
+    self->delta_time = curr_frame - last_frame;
+    last_frame = curr_frame;
     render();
     self->window.swap_buffers();
     glfw().poll_events();
@@ -36,8 +49,21 @@ bool Application::just_released(Key key) {
   return pressed_before && !pressed_now;
 }
 
+void Application::enable_cursor_capture(bool enabled) {
+  self->window.enable_cursor_capture(enabled);
+}
+
+void Application::add_cursor_pos_callback(
+    std::function<void(double, double)> &&callback) {
+  self->cursor_pos_callbacks.push_back(callback);
+}
+
 float Application::elapsed_seconds() {
   return static_cast<float>(glfw().get_time().count());
+}
+
+float Application::delta_seconds() {
+  return static_cast<float>(self->delta_time.count());
 }
 
 void Application::clear(const Color &color) {

@@ -27,6 +27,8 @@ enum class Key {
   A,
   S,
   D,
+  E,
+  Q,
 };
 
 }  // namespace iphelf::opengl

@@ -1,11 +1,13 @@
 add_library(iphelf-opengl
         include/iphelf/opengl/application.h
+        include/iphelf/opengl/camera.h
         include/iphelf/opengl/color.h
         include/iphelf/opengl/input.h
         include/iphelf/opengl/program.h
         include/iphelf/opengl/texture.h
         include/iphelf/opengl/trianglearray.h
         src/application.cpp
+        src/camera.cpp
         src/color.cpp
         src/gl.cpp
         src/gl.h

@@ -2,8 +2,10 @@
 
 #include <chrono>
 #include <filesystem>
+#include <functional>
 #include <memory>
 
+#include "camera.h"
 #include "input.h"
 #include "program.h"
 #include "texture.h"
@@ -66,12 +68,22 @@ class Application {
     return {path_texture, filter_type, wrapping_mode, Color::Black};
   }
 
+  static inline Camera create_camera(const glm::vec3 &pos, const glm::vec3 &up,
+                                     float yaw = 0.0f, float pitch = 0.0f,
+                                     float sensitivity = 0.1f) {
+    return {pos, up, yaw, pitch, sensitivity};
+  }
+
   // check keyboard
   bool is_down(Key key);
   bool just_released(Key key);
+  void enable_cursor_capture(bool enabled=true);
+  using CursorPosCallback = std::function<void(double, double)>;
+  void add_cursor_pos_callback(CursorPosCallback &&callback);
 
   // check time (in seconds)
   static float elapsed_seconds();
+  float delta_seconds();
 
   // render stuff
   static void clear(const Color &color);

@@ -75,8 +75,20 @@ bool GLFW::is_key_down(GLFWwindow *w, Key k) {
       {Key::A, GLFW_KEY_A},
       {Key::S, GLFW_KEY_S},
       {Key::D, GLFW_KEY_D},
+      {Key::E, GLFW_KEY_E},
+      {Key::Q, GLFW_KEY_Q},
   };
   return glfwGetKey(w, to_glfw_key.at(k)) == GLFW_PRESS;
+}
+
+void GLFW::enable_cursor_capture(GLFWwindow *w, bool enabled) {
+  glfwSetInputMode(w, GLFW_CURSOR,
+                   enabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+}
+
+void GLFW::set_cursor_pos_callback(GLFWwindow *w,
+                                   GLFW::cursor_pos_callback_t callback) {
+  glfwSetCursorPosCallback(w, callback);
 }
 
 void GLFW::swap_buffers(GLFWwindow *w) { glfwSwapBuffers(w); }

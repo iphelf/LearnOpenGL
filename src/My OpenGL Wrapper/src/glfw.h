@@ -21,13 +21,17 @@ class GLFW {
 
   // window functions
   GLFWwindow *create_window(int width, int height, const std::string &title);
-  using framebuffer_size_callback_t = void (*)(GLFWwindow *, int, int);
+  using framebuffer_size_callback_t = void (*)(GLFWwindow *, int width,
+                                               int height);
   void set_framebuffer_size_callback(GLFWwindow *w,
                                      framebuffer_size_callback_t callback);
   void destroy_window(GLFWwindow *w);
   bool window_should_close(GLFWwindow *w);
   void set_window_should_close(GLFWwindow *w);
   bool is_key_down(GLFWwindow *w, Key k);
+  void enable_cursor_capture(GLFWwindow *w, bool enabled = true);
+  using cursor_pos_callback_t = void (*)(GLFWwindow *, double x, double y);
+  void set_cursor_pos_callback(GLFWwindow *w, cursor_pos_callback_t callback);
 
   // render loop
   void swap_buffers(GLFWwindow *w);
