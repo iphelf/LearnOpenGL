@@ -3,6 +3,7 @@
 namespace iphelf::opengl {
 
 enum class Key {
+  Escape,
   MinusUnderscore,
   EqualPlus,
   Up,
@@ -28,4 +29,4 @@ enum class Key {
   D,
 };
 
-}
+}  // namespace iphelf::opengl

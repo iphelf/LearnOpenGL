@@ -28,7 +28,7 @@ class Program {
   Program &operator=(Program &&other) noexcept;
   ~Program();
 
-  void with_uniform(const std::string &name, Color color) const;
+  void with_uniform(const std::string &name, const Color &color) const;
   void with_uniform(const std::string &name, int number) const;
   void with_uniform(const std::string &name, float number) const;
   void with_uniform(const std::string &name, const glm::mat4 &matrix) const;

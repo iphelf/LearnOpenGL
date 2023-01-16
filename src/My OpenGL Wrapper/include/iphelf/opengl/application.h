@@ -32,27 +32,27 @@ class Application {
   // build stuff
 
   template <int Dimension>
-  inline static TriangleArray create_triangle_array(
+  static inline TriangleArray create_triangle_array(
       const std::vector<Triangle<Dimension>> &triangles,
       const std::vector<int> &attribute_sizes = {Dimension}) {
     return TriangleArray{triangles, attribute_sizes};
   }
 
   template <int Dimension>
-  inline static TriangleArray create_triangle_array(
+  static inline TriangleArray create_triangle_array(
       const std::vector<Vertex<Dimension>> &vertices,
       const std::vector<IndexedTriangle> &triangles,
       const std::vector<int> &attribute_sizes = {Dimension}) {
     return TriangleArray{vertices, triangles, attribute_sizes};
   }
 
-  inline static Program create_program(
+  static inline Program create_program(
       const std::filesystem::path &path_vertex_shader,
       const std::filesystem::path &path_fragment_shader) {
     return {path_vertex_shader, path_fragment_shader};
   }
 
-  inline static Texture create_texture(
+  static inline Texture create_texture(
       const std::filesystem::path &path_texture,
       Texture::WrappingMode wrapping_mode = Texture::WrappingMode::ClampToEdge,
       Color border_color = Color::Black,
@@ -60,7 +60,7 @@ class Application {
     return {path_texture, filter_type, wrapping_mode, border_color};
   }
 
-  inline static Texture create_texture(
+  static inline Texture create_texture(
       const std::filesystem::path &path_texture,
       Texture::WrappingMode wrapping_mode, Texture::FilterType filter_type) {
     return {path_texture, filter_type, wrapping_mode, Color::Black};
@@ -71,10 +71,11 @@ class Application {
   bool just_released(Key key);
 
   // check time (in seconds)
-  static std::chrono::duration<float> get_time();
+  static float elapsed_seconds();
 
   // render stuff
   static void clear(const Color &color);
+  static void enable_depth_test(bool enabled = true);
 };
 
 }  // namespace iphelf::opengl

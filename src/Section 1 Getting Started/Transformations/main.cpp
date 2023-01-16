@@ -45,7 +45,7 @@ class Transformations : public iphelf::opengl::Application {
     static const auto translation_br{glm::translate(identity, {0.5, -0.5, 0})};
     static const auto transform_tl{translation_tl * scaling};
     static const auto transform_br{translation_br * scaling};
-    auto seconds{get_time().count()};
+    auto seconds{elapsed_seconds()};
 
     auto rotation_over_time{
         glm::rotate(identity, glm::radians(seconds * 60.0f), {0, 0, 1})};

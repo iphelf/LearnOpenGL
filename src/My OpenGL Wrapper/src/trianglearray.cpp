@@ -1,10 +1,10 @@
-#include "iphelf/opengl/trianglearray.h"
-
-#include <glad/gl.h>
+#include <iphelf/opengl/trianglearray.h>
 
 #include <algorithm>
 #include <map>
 #include <numeric>
+
+#include "gl.h"
 
 namespace iphelf::opengl {
 
@@ -58,64 +58,38 @@ TriangleArray::TriangleArray(std::size_t n_triangles,
 
 TriangleArray::TriangleArray(const std::vector<int> &attribute_sizes,
                              const std::span<const float> &fields,
-                             const std::span<const Element> &elements) {
+                             const std::span<const Index> &elements) {
   init(attribute_sizes, fields, elements);
 }
 
 void TriangleArray::init(const std::vector<int> &attribute_sizes,
                          const std::span<const float> &fields,
-                         const std::span<const Element> &elements) {
-  {
-    auto vao{static_cast<GLuint>(vertex_array_object)};
-    glGenVertexArrays(1, &vao);
-    vertex_array_object = static_cast<int>(vao);
-  }
-  {
-    auto vbo{static_cast<GLuint>(vertex_buffer_object)};
-    glGenBuffers(1, &vbo);
-    vertex_buffer_object = static_cast<int>(vbo);
-  }
-  {
-    auto ebo{static_cast<GLuint>(element_buffer_object)};
-    glGenBuffers(1, &ebo);
-    element_buffer_object = static_cast<int>(ebo);
-  }
+                         const std::span<const Index> &elements) {
+  vertex_array_object = gl().gen_vertex_array_object();
+  vertex_buffer_object = gl().gen_buffer_object();
+  element_buffer_object = gl().gen_buffer_object();
 
-  glBindVertexArray(vertex_array_object);
+  gl().bind_vertex_array_object(vertex_array_object);
 
-  glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
-  glBufferData(GL_ARRAY_BUFFER,
-               static_cast<GLsizeiptr>(fields.size() * sizeof(float)),
-               fields.data(), GL_STATIC_DRAW);
+  gl().bind_vertex_array_buffer_object(vertex_buffer_object);
+  gl().bind_vertex_array_buffer_object(vertex_buffer_object);
+  gl().send_vertex_array_buffer_data(fields);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_object);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-               static_cast<GLsizeiptr>(elements.size() * sizeof(Element)),
-               elements.data(), GL_STATIC_DRAW);
+  gl().bind_element_array_buffer_object(element_buffer_object);
+  gl().send_element_array_buffer_data(elements);
+
   size = static_cast<int>(elements.size());
 
-  const GLsizei stride =
-      std::accumulate(attribute_sizes.begin(), attribute_sizes.end(), 0) *
-      static_cast<int>(sizeof(float));
-  for (std::size_t index{0}, offset{0}; index < attribute_sizes.size();
-       offset += attribute_sizes[index++]) {
-    auto ugly_offset{reinterpret_cast<const void *>(offset * sizeof(float))};
-    glVertexAttribPointer(index, attribute_sizes[index], GL_FLOAT, GL_FALSE,
-                          stride, ugly_offset);
-    glEnableVertexAttribArray(index);
-  }
+  gl().setup_vertex_attributes(attribute_sizes);
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
+  gl().unbind_vertex_array_buffer_object();
+  gl().unbind_vertex_array_object();
 }
 
 TriangleArray::~TriangleArray() {
-  if (auto vao{static_cast<GLuint>(vertex_array_object)})
-    glDeleteVertexArrays(1, &vao);
-  if (auto vbo{static_cast<GLuint>(vertex_buffer_object)})
-    glDeleteBuffers(1, &vbo);
-  if (auto ebo{static_cast<GLuint>(element_buffer_object)})
-    glDeleteBuffers(1, &ebo);
+  gl().delete_vertex_array_object(vertex_array_object);
+  gl().delete_buffer_object(vertex_buffer_object);
+  gl().delete_buffer_object(element_buffer_object);
 }
 
 TriangleArray::TriangleArray(TriangleArray &&other) noexcept {

@@ -185,6 +185,7 @@ class CoordinateSystems : public iphelf::opengl::Application {
   CoordinateSystems() : Application(800, 600, "Coordinate Systems") {
     program.with_uniform("u_world2view", world2view);
     program.with_uniform("u_view2clip", view2clip_perspective());
+    enable_depth_test();
   }
 
  private:
@@ -277,7 +278,7 @@ class CoordinateSystems : public iphelf::opengl::Application {
 
     program.bind_texture(image_face);
     static const auto player_scaling{glm::scale(identity, glm::vec3{0.5f})};
-    float seconds = get_time().count();
+    float seconds = elapsed_seconds();
     static const auto rotation_axis{glm::normalize(glm::vec3{1, 0.7, 0.5})};
     auto player_rotation{
         glm::rotate(identity, glm::radians(seconds * 60), rotation_axis)};

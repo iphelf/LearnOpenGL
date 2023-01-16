@@ -1,45 +1,23 @@
 #include "shader.h"
 
-#include <glad/gl.h>
-
-#include <iostream>
+#include "gl.h"
 
 namespace iphelf::opengl {
 
 VertexShader::VertexShader(const std::string &source) {
-  shader = glCreateShader(GL_VERTEX_SHADER);
-  const char *source_data = source.data();
-  glShaderSource(shader, 1, &source_data, nullptr);
-  glCompileShader(shader);
-  GLint success;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    const int info_size = 512;
-    char info_log[info_size];
-    glGetShaderInfoLog(shader, info_size, nullptr, info_log);
-    std::cerr << info_log << std::endl << source << std::endl;
-    throw std::runtime_error("Failed to compile vertex shader source");
-  }
+  shader = gl().create_vertex_shader_object();
+  gl().send_shader_source(shader, source);
+  gl().compile_shader(shader);
 }
 
-VertexShader::~VertexShader() { glDeleteShader(shader); }
+VertexShader::~VertexShader() { gl().delete_shader_object(shader); }
 
 FragmentShader::FragmentShader(const std::string &source) {
-  shader = glCreateShader(GL_FRAGMENT_SHADER);
-  const char *source_data = source.data();
-  glShaderSource(shader, 1, &source_data, nullptr);
-  glCompileShader(shader);
-  GLint success;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    const int info_size = 512;
-    char info_log[info_size];
-    glGetShaderInfoLog(shader, info_size, nullptr, info_log);
-    std::cerr << info_log << std::endl << source << std::endl;
-    throw std::runtime_error("Failed to compile fragment shader source");
-  }
+  shader = gl().create_fragment_shader_object();
+  gl().send_shader_source(shader, source);
+  gl().compile_shader(shader);
 }
 
-FragmentShader::~FragmentShader() { glDeleteShader(shader); }
+FragmentShader::~FragmentShader() { gl().delete_shader_object(shader); }
 
 }  // namespace iphelf::opengl

@@ -28,7 +28,8 @@ struct GenericTriangle {
 template <std::size_t Dimension>
 using Triangle = GenericTriangle<Vertex<Dimension>>;
 
-using IndexedTriangle = GenericTriangle<unsigned>;
+using Index = unsigned;
+using IndexedTriangle = GenericTriangle<Index>;
 
 class TriangleArray {
   int vertex_array_object = 0;
@@ -38,8 +39,6 @@ class TriangleArray {
 
   friend class Application;
   friend class Program;
-
-  using Element = IndexedTriangle::Vertex;
 
   template <std::size_t Dimension>
   TriangleArray(const std::vector<Triangle<Dimension>> &triangles,
@@ -53,12 +52,11 @@ class TriangleArray {
   TriangleArray(const std::vector<Vertex<Dimension>> &vertices,
                 const std::vector<IndexedTriangle> &triangles,
                 const std::vector<int> &attribute_sizes)
-      : TriangleArray{
-            attribute_sizes,
-            std::span<const float>(vertices.front().data(),
-                                   vertices.size() * Dimension),
-            std::span<const Element>(triangles.front().vertices.data(),
-                                     triangles.size() * 3)} {}
+      : TriangleArray{attribute_sizes,
+                      std::span<const float>(vertices.front().data(),
+                                             vertices.size() * Dimension),
+                      std::span<const Index>(triangles.front().vertices.data(),
+                                             triangles.size() * 3)} {}
 
   TriangleArray(std::size_t n_triangles,
                 const std::vector<int> &attribute_sizes,
@@ -66,11 +64,11 @@ class TriangleArray {
 
   TriangleArray(const std::vector<int> &attribute_sizes,
                 const std::span<const float> &fields,
-                const std::span<const Element> &elements);
+                const std::span<const Index> &elements);
 
   void init(const std::vector<int> &attribute_sizes,
             const std::span<const float> &fields,
-            const std::span<const Element> &elements);
+            const std::span<const Index> &elements);
 
  public:
   TriangleArray() = default;
