@@ -3,7 +3,6 @@
 #include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 
 const auto path_shaders{std::filesystem::current_path() / "shaders"};
 const auto path_textures{std::filesystem::current_path() / "textures"};
@@ -56,7 +55,8 @@ class Camera : public iphelf::opengl::Application {
         {3, 2});
   })};
   const float velocity{1.0f};
-  iphelf::opengl::Camera camera{create_camera(glm::vec3{0.0f}, {0, 0, 1})};
+  iphelf::opengl::Camera camera{
+      create_camera(glm::vec3{0.0f}, {0, 0, 1}, {0, 1, 0})};
 
  public:
   Camera() : Application(800, 600, "Camera") {
@@ -80,17 +80,20 @@ class Camera : public iphelf::opengl::Application {
 
  private:
   void handle_inputs() {
-    auto dt = delta_seconds();
+    auto dt{delta_seconds()};
+    auto v{dt * velocity};
     if (int forward =
             is_down(iphelf::opengl::Key::W) - is_down(iphelf::opengl::Key::S),
         right =
-            is_down(iphelf::opengl::Key::D) - is_down(iphelf::opengl::Key::A),
-        up = is_down(iphelf::opengl::Key::E) - is_down(iphelf::opengl::Key::Q);
-        forward || right || up) {
-      auto wasd{glm::normalize(glm::vec3{forward, right, up})};
-      wasd *= dt;
-      camera.move(wasd.x, wasd.y, wasd.z);
+            is_down(iphelf::opengl::Key::D) - is_down(iphelf::opengl::Key::A);
+        forward || right) {
+      auto wasd{glm::normalize(glm::vec2{forward, right})};
+      wasd *= v;
+      camera.move(wasd.x, wasd.y);
     }
+    if (int up =
+            is_down(iphelf::opengl::Key::E) - is_down(iphelf::opengl::Key::Q))
+      camera.ascend(static_cast<float>(up) * v);
   }
 
   void render() override {

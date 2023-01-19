@@ -8,9 +8,6 @@ namespace iphelf::opengl {
 
 struct Camera::Impl {
   // x: right, y: forward, z: up
-  static const glm::vec3 axis_forward;
-  static const glm::vec3 axis_right;
-  static const glm::vec3 axis_up;
   static constexpr glm::vec3 movement(float forward, float right, float up) {
     return {right, forward, up};
   }
@@ -21,39 +18,29 @@ struct Camera::Impl {
                     glm::sin(yaw_r) * glm::cos(pitch_r), glm::sin(pitch_r));
   }
 
-  // V_world = orientation * V_local (relative to axis_forward)
-  const glm::mat3 orientation;  // local to world
   glm::vec3 pos;                // world
   const glm::vec3 up;           // world
   glm::vec3 front;              // world
-  float yaw;                    // in degrees (default when without suffix)
-  float pitch;                  // in degrees (default when without suffix)
+  const glm::mat3 orientation;  // local to world
+  float yaw{0};                 // in degrees (default when without suffix)
+  float pitch{0};               // in degrees (default when without suffix)
   const float sensitivity;
-  Impl(const glm::vec3& pos, const glm::vec3& up, float yaw, float pitch,
+  Impl(const glm::vec3& pos, const glm::vec3& up, const glm::vec3& front,
        float sensitivity)
-      : orientation{std::invoke([&basis_up = up] {
-          // try to align with axis_forward
-          auto basis_right{glm::normalize(glm::cross(axis_forward, basis_up))};
-          auto basis_forward{glm::cross(basis_up, basis_right)};
-          return glm::mat3{basis_right, basis_forward, basis_up};
-        })},
-        pos{pos},
-        up{up},
-        front{orientation * axis_forward},
-        yaw{yaw},
-        pitch{pitch},
+      : pos{pos},
+        up{glm::normalize(up)},
+        front{glm::normalize(glm::cross(this->up, glm::cross(front, up)))},
+        orientation{glm::mat3{glm::cross(this->front, this->up), this->front,
+                              this->up}},
         sensitivity{sensitivity} {
     recompute_front();
   }
   void recompute_front() { front = orientation * direction(yaw, pitch); }
 };
-const glm::vec3 Camera::Impl::axis_forward{Camera::Impl::direction(0, 0)};
-const glm::vec3 Camera::Impl::axis_right{Camera::Impl::direction(-90, 0)};
-const glm::vec3 Camera::Impl::axis_up{Camera::Impl::direction(0, 90)};
 
-Camera::Camera(const glm::vec3& pos, const glm::vec3& up, float yaw,
-               float pitch, float sensitivity)
-    : self{std::make_unique<Impl>(pos, up, yaw, pitch, sensitivity)} {}
+Camera::Camera(const glm::vec3& pos, const glm::vec3& up,
+               const glm::vec3& front, float sensitivity)
+    : self{std::make_unique<Impl>(pos, up, front, sensitivity)} {}
 
 Camera::Camera(Camera&& other) noexcept : self{nullptr} {
   *this = std::move(other);
@@ -76,17 +63,20 @@ void Camera::rotate(float delta_yaw, float delta_pitch, bool constrained) {
     return yaw;
   });
   self->pitch += delta_pitch;
-  if (constrained) self->pitch = std::clamp(self->pitch, -89.0f, 89.0f);
+  if (constrained) self->pitch = std::clamp(self->pitch, -89.9f, 89.9f);
   self->recompute_front();
 }
 
-void Camera::move(float delta_forward, float delta_right, float delta_up) {
+void Camera::move(float delta_forward, float delta_right) {
   // move with respect to current front direction
   self->pos += self->front * delta_forward;
   auto right{glm::normalize(glm::cross(self->front, self->up))};
   self->pos += right * delta_right;
-  auto up{glm::cross(right, self->front)};
-  self->pos += up * delta_up;
+}
+
+void Camera::ascend(float delta_up) {
+  // move with respect to the vertical up
+  self->pos += self->up * delta_up;
 }
 
 glm::mat4 Camera::world2view() const {

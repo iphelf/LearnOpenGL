@@ -11,16 +11,17 @@ class Camera {
 
   friend class Application;
 
-  Camera(const glm::vec3 &pos, const glm::vec3 &up, float yaw, float pitch,
+  Camera(const glm::vec3& pos, const glm::vec3& up, const glm::vec3& front,
          float sensitivity);
 
  public:
-  Camera(Camera &&other) noexcept;
-  Camera &operator=(Camera &&other) noexcept;
+  Camera(Camera&& other) noexcept;
+  Camera& operator=(Camera&& other) noexcept;
   ~Camera();
 
   void rotate(float delta_yaw, float delta_pitch, bool constrained = true);
-  void move(float delta_forward, float delta_right, float delta_up);
+  void move(float delta_forward, float delta_right);
+  void ascend(float delta_up);
   [[nodiscard]] glm::mat4 world2view() const;
 };
 

@@ -69,15 +69,15 @@ class Application {
   }
 
   static inline Camera create_camera(const glm::vec3 &pos, const glm::vec3 &up,
-                                     float yaw = 0.0f, float pitch = 0.0f,
+                                     const glm::vec3 &front,
                                      float sensitivity = 0.1f) {
-    return {pos, up, yaw, pitch, sensitivity};
+    return {pos, up, front, sensitivity};
   }
 
   // check keyboard
   bool is_down(Key key);
   bool just_released(Key key);
-  void enable_cursor_capture(bool enabled=true);
+  void enable_cursor_capture(bool enabled = true);
   using CursorPosCallback = std::function<void(double, double)>;
   void add_cursor_pos_callback(CursorPosCallback &&callback);
 
