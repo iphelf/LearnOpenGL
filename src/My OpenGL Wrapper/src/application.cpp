@@ -12,11 +12,7 @@ struct Application::Impl {
   static std::vector<CursorPosCallback>
       cursor_pos_callbacks;  // rough workaround to eliminate capturing
   std::chrono::duration<double> delta_time{};
-  explicit Impl(Window &&window) : window{std::move(window)} {
-    this->window.set_cursor_pos_callback([](GLFWwindow *, double x, double y) {
-      for (auto &callback : cursor_pos_callbacks) callback(x, y);
-    });
-  }
+  explicit Impl(Window &&window) : window{std::move(window)} {}
 };
 std::vector<Application::CursorPosCallback>
     Application::Impl::cursor_pos_callbacks;
@@ -39,9 +35,9 @@ void Application::run() {
   }
 }
 
-bool Application::is_down(Key key) { return self->window.is_down(key); }
+bool Application::is_down(Key key) const { return self->window.is_down(key); }
 
-bool Application::just_released(Key key) {
+bool Application::just_released(Key key) const {
   static std::unordered_map<Key, bool> key_pressed;
   bool pressed_before = key_pressed[key];
   bool pressed_now = is_down(key);
@@ -55,14 +51,14 @@ void Application::enable_cursor_capture(bool enabled) {
 
 void Application::add_cursor_pos_callback(
     std::function<void(double, double)> &&callback) {
-  self->cursor_pos_callbacks.push_back(callback);
+  self->window.add_cursor_pos_callback(std::move(callback));
 }
 
 float Application::elapsed_seconds() {
   return static_cast<float>(glfw().get_time().count());
 }
 
-float Application::delta_seconds() {
+float Application::delta_seconds() const {
   return static_cast<float>(self->delta_time.count());
 }
 

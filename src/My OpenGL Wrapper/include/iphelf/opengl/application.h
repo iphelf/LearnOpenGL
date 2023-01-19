@@ -75,15 +75,15 @@ class Application {
   }
 
   // check keyboard
-  bool is_down(Key key);
-  bool just_released(Key key);
+  [[nodiscard]] bool is_down(Key key) const;
+  [[nodiscard]] bool just_released(Key key) const;
   void enable_cursor_capture(bool enabled = true);
   using CursorPosCallback = std::function<void(double, double)>;
   void add_cursor_pos_callback(CursorPosCallback &&callback);
 
   // check time (in seconds)
   static float elapsed_seconds();
-  float delta_seconds();
+  [[nodiscard]] float delta_seconds() const;
 
   // render stuff
   static void clear(const Color &color);
