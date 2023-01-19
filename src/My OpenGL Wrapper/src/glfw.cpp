@@ -81,6 +81,15 @@ bool GLFW::is_key_down(GLFWwindow *w, Key k) {
   return glfwGetKey(w, to_glfw_key.at(k)) == GLFW_PRESS;
 }
 
+bool GLFW::is_mouse_button_down(GLFWwindow *w, MouseButton mb) {
+  static const std::unordered_map<MouseButton, int> to_glfw_mouse_button{
+      {MouseButton::L, GLFW_MOUSE_BUTTON_LEFT},
+      {MouseButton::M, GLFW_MOUSE_BUTTON_MIDDLE},
+      {MouseButton::R, GLFW_MOUSE_BUTTON_RIGHT},
+  };
+  return glfwGetMouseButton(w, to_glfw_mouse_button.at(mb)) == GLFW_PRESS;
+}
+
 void GLFW::enable_cursor_capture(GLFWwindow *w, bool enabled) {
   glfwSetInputMode(w, GLFW_CURSOR,
                    enabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);

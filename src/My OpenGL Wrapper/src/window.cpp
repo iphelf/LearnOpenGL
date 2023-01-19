@@ -121,6 +121,10 @@ bool Window::should_close() const {
 
 bool Window::is_down(Key key) const { return glfw().is_key_down(self->w, key); }
 
+bool Window::is_down(MouseButton mouse_button) const {
+  return glfw().is_mouse_button_down(self->w, mouse_button);
+}
+
 void Window::swap_buffers() { glfw().swap_buffers(self->w); }
 
 }  // namespace iphelf::opengl

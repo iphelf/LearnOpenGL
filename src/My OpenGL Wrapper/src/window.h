@@ -31,6 +31,7 @@ class Window {
   void set_should_close();
   [[nodiscard]] bool should_close() const;
   [[nodiscard]] bool is_down(Key key) const;
+  [[nodiscard]] bool is_down(MouseButton mouse_button) const;
   void swap_buffers();
 };
 

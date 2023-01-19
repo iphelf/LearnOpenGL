@@ -76,7 +76,22 @@ class Application {
 
   // check keyboard
   [[nodiscard]] bool is_down(Key key) const;
-  [[nodiscard]] bool just_released(Key key) const;
+  [[nodiscard]] bool is_down(MouseButton mouse_button) const;
+  [[nodiscard]] bool just_changed_to(Key key, bool pressed) const;
+  [[nodiscard]] bool just_changed_to(MouseButton mouse_button,
+                                     bool pressed) const;
+  [[nodiscard]] bool just_released(Key key) const {
+    return just_changed_to(key, false);
+  }
+  [[nodiscard]] bool just_released(MouseButton mouse_button) const {
+    return just_changed_to(mouse_button, false);
+  }
+  [[nodiscard]] bool just_pressed(Key key) const {
+    return just_changed_to(key, true);
+  }
+  [[nodiscard]] bool just_pressed(MouseButton mouse_button) const {
+    return just_changed_to(mouse_button, true);
+  }
   void enable_cursor_capture(bool enabled = true);
   using CursorPosCallback = std::function<void(double, double)>;
   void add_cursor_pos_callback(CursorPosCallback &&callback);

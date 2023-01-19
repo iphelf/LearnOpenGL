@@ -31,4 +31,10 @@ enum class Key {
   Q,
 };
 
+enum class MouseButton {
+  L,
+  M,
+  R,
+};
+
 }  // namespace iphelf::opengl

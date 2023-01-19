@@ -37,12 +37,25 @@ void Application::run() {
 
 bool Application::is_down(Key key) const { return self->window.is_down(key); }
 
-bool Application::just_released(Key key) const {
+bool Application::is_down(MouseButton mouse_button) const {
+  return self->window.is_down(mouse_button);
+}
+
+bool Application::just_changed_to(Key key, bool pressed) const {
   static std::unordered_map<Key, bool> key_pressed;
   bool pressed_before = key_pressed[key];
   bool pressed_now = is_down(key);
   key_pressed[key] = pressed_now;
-  return pressed_before && !pressed_now;
+  return pressed_before != pressed_now && pressed_now == pressed;
+}
+
+bool Application::just_changed_to(MouseButton mouse_button,
+                                  bool pressed) const {
+  static std::unordered_map<MouseButton, bool> mouse_button_pressed;
+  bool pressed_before = mouse_button_pressed[mouse_button];
+  bool pressed_now = is_down(mouse_button);
+  mouse_button_pressed[mouse_button] = pressed_now;
+  return pressed_before != pressed_now && pressed_now == pressed;
 }
 
 void Application::enable_cursor_capture(bool enabled) {

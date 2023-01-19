@@ -57,6 +57,7 @@ class Camera : public iphelf::opengl::Application {
   const float velocity{1.0f};
   iphelf::opengl::Camera camera{
       create_camera(glm::vec3{0.0f}, {0, 0, 1}, {0, 1, 0})};
+  bool camera_moving{false};
 
  public:
   Camera() : Application(800, 600, "Camera") {
@@ -66,13 +67,12 @@ class Camera : public iphelf::opengl::Application {
     program.with_uniform(
         "u_view2clip",
         glm::perspective(glm::radians(45.0), 800.0 / 600.0, 0.1, 100.0));
-    enable_cursor_capture();
     add_cursor_pos_callback([this](double x, double y) {
       static double last_x{x};
       static double last_y{y};
       auto offset_x = static_cast<float>(x - last_x);
       auto offset_y = static_cast<float>(last_y - y);
-      camera.rotate(offset_x, offset_y);
+      if (camera_moving) camera.rotate(offset_x, offset_y);
       last_x = x;
       last_y = y;
     });
@@ -80,20 +80,25 @@ class Camera : public iphelf::opengl::Application {
 
  private:
   void handle_inputs() {
-    auto dt{delta_seconds()};
-    auto v{dt * velocity};
-    if (int forward =
-            is_down(iphelf::opengl::Key::W) - is_down(iphelf::opengl::Key::S),
-        right =
-            is_down(iphelf::opengl::Key::D) - is_down(iphelf::opengl::Key::A);
-        forward || right) {
-      auto wasd{glm::normalize(glm::vec2{forward, right})};
-      wasd *= v;
-      camera.move(wasd.x, wasd.y);
-    }
-    if (int up =
-            is_down(iphelf::opengl::Key::E) - is_down(iphelf::opengl::Key::Q))
-      camera.ascend(static_cast<float>(up) * v);
+    camera_moving = is_down(iphelf::opengl::MouseButton::R);
+    if (camera_moving) {
+      if (just_pressed(iphelf::opengl::MouseButton::R)) enable_cursor_capture();
+      auto dt{delta_seconds()};
+      auto v{dt * velocity};
+      if (int forward =
+              is_down(iphelf::opengl::Key::W) - is_down(iphelf::opengl::Key::S),
+          right =
+              is_down(iphelf::opengl::Key::D) - is_down(iphelf::opengl::Key::A);
+          forward || right) {
+        auto wasd{glm::normalize(glm::vec2{forward, right})};
+        wasd *= v;
+        camera.move(wasd.x, wasd.y);
+      }
+      if (int up =
+              is_down(iphelf::opengl::Key::E) - is_down(iphelf::opengl::Key::Q))
+        camera.ascend(static_cast<float>(up) * v);
+    } else if (just_released(iphelf::opengl::MouseButton::R))
+      enable_cursor_capture(false);
   }
 
   void render() override {

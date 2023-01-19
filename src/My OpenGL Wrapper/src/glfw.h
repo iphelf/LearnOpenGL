@@ -29,6 +29,7 @@ class GLFW {
   bool window_should_close(GLFWwindow *w);
   void set_window_should_close(GLFWwindow *w);
   bool is_key_down(GLFWwindow *w, Key k);
+  bool is_mouse_button_down(GLFWwindow *w, MouseButton mb);
   void enable_cursor_capture(GLFWwindow *w, bool enabled = true);
   using cursor_pos_callback_t = void (*)(GLFWwindow *, double x, double y);
   void set_cursor_pos_callback(GLFWwindow *w, cursor_pos_callback_t callback);
