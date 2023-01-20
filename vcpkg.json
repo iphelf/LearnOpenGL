@@ -1,0 +1,11 @@
+{
+  "name": "learn-opengl",
+  "version": "0.1",
+  "dependencies": [
+    "opengl",
+    "glfw3",
+    "glm",
+    "glad",
+    "stb"
+  ]
+}
