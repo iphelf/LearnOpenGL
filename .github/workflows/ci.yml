@@ -1,0 +1,25 @@
+name: CI for build
+
+run-name: ${{ github.actor }} triggered a build with a push
+
+on:
+  push:
+    branches:
+      - try-ci
+
+jobs:
+  check-gcc-version:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: lukka/get-cmake@latest
+      - uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgJsonGlob: 'vcpkg.json'
+      - uses: lukka/run-cmake@v10
