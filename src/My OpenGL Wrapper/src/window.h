@@ -28,6 +28,8 @@ class Window {
   void enable_cursor_capture(bool enabled = true);
   using CursorPosCallback = std::function<void(double x, double y)>;
   void add_cursor_pos_callback(CursorPosCallback &&callback);
+  using ScrollCallback = std::function<void(double offset_x, double offset_y)>;
+  void add_scroll_callback(ScrollCallback &&callback);
   void set_should_close();
   [[nodiscard]] bool should_close() const;
   [[nodiscard]] bool is_down(Key key) const;

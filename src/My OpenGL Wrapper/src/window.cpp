@@ -43,6 +43,26 @@ struct Window::Impl {
     s_cp_callbacks.erase(w);
   }
 
+  // Callbacks on scroll change
+  static std::unordered_map<GLFWwindow *, std::vector<ScrollCallback>>
+      s_scroll_callbacks;
+  static void global_scroll_callback(GLFWwindow *w, double offset_x,
+                                     double offset_y) {
+    for (auto &callback : s_scroll_callbacks[w]) callback(offset_x, offset_y);
+  }
+  static void add_global_scroll_callback(GLFWwindow *w,
+                                         ScrollCallback &&callback) {
+    auto found = s_scroll_callbacks.find(w);
+    if (found == s_scroll_callbacks.end()) {
+      glfw().set_scroll_callback(w, global_scroll_callback);
+      s_scroll_callbacks[w].push_back(callback);
+    } else
+      found->second.push_back(callback);
+  }
+  static void remove_global_scroll_callback(GLFWwindow *w) {
+    s_scroll_callbacks.erase(w);
+  }
+
  public:
   GLFWwindow *w;
   int width;
@@ -75,12 +95,17 @@ struct Window::Impl {
   void add_cursor_pos_callback(CursorPosCallback &&callback) {
     add_global_cursor_pos_callback(w, std::move(callback));
   }
+  void add_scroll_callback(ScrollCallback &&callback) {
+    add_global_scroll_callback(w, std::move(callback));
+  }
 };
 
 std::unordered_map<GLFWwindow *, std::vector<Window::FramebufferSizeCallback>>
     Window::Impl::s_fs_callbacks{};
 std::unordered_map<GLFWwindow *, std::vector<Window::CursorPosCallback>>
     Window::Impl::s_cp_callbacks{};
+std::unordered_map<GLFWwindow *, std::vector<Window::ScrollCallback>>
+    Window::Impl::s_scroll_callbacks{};
 
 Window::Window(int width, int height, const std::string &title)
     : self{std::make_unique<Impl>(width, height, title)} {}
@@ -111,6 +136,10 @@ void Window::enable_cursor_capture(bool enabled) {
 
 void Window::add_cursor_pos_callback(CursorPosCallback &&callback) {
   self->add_cursor_pos_callback(std::move(callback));
+}
+
+void Window::add_scroll_callback(Window::ScrollCallback &&callback) {
+  self->add_scroll_callback(std::move(callback));
 }
 
 void Window::set_should_close() { glfw().set_window_should_close(self->w); }

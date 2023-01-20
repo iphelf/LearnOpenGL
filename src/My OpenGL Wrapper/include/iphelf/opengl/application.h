@@ -93,8 +93,10 @@ class Application {
     return just_changed_to(mouse_button, true);
   }
   void enable_cursor_capture(bool enabled = true);
-  using CursorPosCallback = std::function<void(double, double)>;
+  using CursorPosCallback = std::function<void(double x, double y)>;
   void add_cursor_pos_callback(CursorPosCallback &&callback);
+  using ScrollCallback = std::function<void(double offset_x, double offset_y)>;
+  void add_scroll_callback(ScrollCallback &&callback);
 
   // check time (in seconds)
   static float elapsed_seconds();

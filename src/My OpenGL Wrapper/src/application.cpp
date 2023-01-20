@@ -63,8 +63,12 @@ void Application::enable_cursor_capture(bool enabled) {
 }
 
 void Application::add_cursor_pos_callback(
-    std::function<void(double, double)> &&callback) {
+    Application::CursorPosCallback &&callback) {
   self->window.add_cursor_pos_callback(std::move(callback));
+}
+
+void Application::add_scroll_callback(Application::ScrollCallback &&callback) {
+  self->window.add_scroll_callback(std::move(callback));
 }
 
 float Application::elapsed_seconds() {

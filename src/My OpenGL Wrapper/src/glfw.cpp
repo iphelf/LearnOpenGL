@@ -100,6 +100,11 @@ void GLFW::set_cursor_pos_callback(GLFWwindow *w,
   glfwSetCursorPosCallback(w, callback);
 }
 
+void GLFW::set_scroll_callback(GLFWwindow *w,
+                               GLFW::scroll_callback_t callback) {
+  glfwSetScrollCallback(w, callback);
+}
+
 void GLFW::swap_buffers(GLFWwindow *w) { glfwSwapBuffers(w); }
 
 void GLFW::poll_events() { glfwPollEvents(); }

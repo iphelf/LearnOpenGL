@@ -3,6 +3,7 @@
 #include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 const auto path_shaders{std::filesystem::current_path() / "shaders"};
 const auto path_textures{std::filesystem::current_path() / "textures"};
@@ -58,6 +59,8 @@ class Camera : public iphelf::opengl::Application {
   iphelf::opengl::Camera camera{
       create_camera(glm::vec3{0.0f}, {0, 0, 1}, {0, 1, 0})};
   bool camera_moving{false};
+  const double default_fov{45};
+  double fov{default_fov};
 
  public:
   Camera() : Application(800, 600, "Camera") {
@@ -75,6 +78,11 @@ class Camera : public iphelf::opengl::Application {
       if (camera_moving) camera.rotate(offset_x, offset_y);
       last_x = x;
       last_y = y;
+    });
+    add_scroll_callback([this](double, double offset_y) {
+      const double sensitivity{5};
+      std::cout << offset_y << '\r' << std::flush;
+      fov = std::clamp(fov - offset_y * sensitivity, 5.0, 90.0);
     });
   }
 
@@ -99,6 +107,7 @@ class Camera : public iphelf::opengl::Application {
         camera.ascend(static_cast<float>(up) * v);
     } else if (just_released(iphelf::opengl::MouseButton::R))
       enable_cursor_capture(false);
+    if (just_released(iphelf::opengl::MouseButton::M)) fov = default_fov;
   }
 
   void render() override {
@@ -107,6 +116,9 @@ class Camera : public iphelf::opengl::Application {
     clear(iphelf::opengl::Color::DarkGreenBluish);
 
     program.bind_texture(image);
+    program.with_uniform(
+        "u_view2clip",
+        glm::perspective(glm::radians(fov), 800.0 / 600.0, 0.1, 100.0));
     program.with_uniform("u_world2view", camera.world2view());
     program.render(cube);
   }
