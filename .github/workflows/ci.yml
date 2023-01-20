@@ -25,4 +25,4 @@ jobs:
         with:
           vcpkgJsonGlob: 'vcpkg.json'
       - uses: lukka/run-cmake@v10
-      - run: cmake --build --config Release
+      - run: cmake --build
