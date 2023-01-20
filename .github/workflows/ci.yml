@@ -5,7 +5,7 @@ run-name: ${{ github.actor }} triggered a build with a push
 on:
   push:
     branches:
-      - try-ci
+      - main
 
 jobs:
   build:
