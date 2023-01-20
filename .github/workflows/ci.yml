@@ -16,6 +16,9 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+    env:
+      # Indicates the location of the vcpkg as a Git submodule of the project repository.
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
     steps:
       - uses: actions/checkout@v3
         with:
