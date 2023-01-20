@@ -8,7 +8,7 @@ on:
       - try-ci
 
 jobs:
-  check-gcc-version:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -19,16 +19,44 @@ jobs:
     env:
       # Indicates the location of the vcpkg as a Git submodule of the project repository.
       VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+      # Tells vcpkg where binary packages are stored.
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg/bincache
+    
     steps:
       - uses: actions/checkout@v3
         with:
             submodules: true
+      
       - uses: lukka/get-cmake@latest
+      
+      - name: Restore vcpkg and its artifacts.
+        uses: actions/cache@v3
+        with:
+          # The first path is the location of vcpkg: it contains the vcpkg executable and data files, as long as the
+          # built package archives (aka binary cache) which are located by VCPKG_DEFAULT_BINARY_CACHE env var.
+          # The other paths starting with '!' are exclusions: they contain termporary files generated during the build of the installed packages.
+          path: |
+            ${{ env.VCPKG_ROOT }}
+            !${{ env.VCPKG_ROOT }}/buildtrees
+            !${{ env.VCPKG_ROOT }}/packages
+            !${{ env.VCPKG_ROOT }}/downloads
+            !${{ env.VCPKG_ROOT }}/installed
+          # The key is composed in a way that it gets properly invalidated: this must happen whenever vcpkg's Git commit id changes, or the list of packages changes. In this case a cache miss must happen and a new entry with a new key with be pushed to GitHub the cache service.
+          # The key includes: hash of the vcpkg.json file, the hash of the vcpkg Git commit id, and the used vcpkg's triplet. The vcpkg's commit id would suffice, but computing an hash out it does not harm.
+          # Note: given a key, the cache content is immutable. If a cache entry has been created improperly, in order the recreate the right content the key must be changed as well, and it must be brand new (i.e. not existing already).
+          key: |
+            ${{ hashFiles( 'vcpkg.json' ) }}-${{ hashFiles( '.git/modules/vcpkg/HEAD' )}}-${{ matrix.triplet }}
+      
       - uses: lukka/run-vcpkg@v10
         with:
           vcpkgJsonGlob: 'vcpkg.json'
+      
       - uses: lukka/run-cmake@v10
-      - if: matrix.os == 'ubuntu-latest'
+      
+      - name: Install OpenGL for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
         run: sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+      
       - run: cmake --preset ninja-multi-vcpkg
+      
       - run: cmake --build --preset ninja-multi-vcpkg --config Release
