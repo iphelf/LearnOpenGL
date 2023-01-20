@@ -35,7 +35,11 @@ jobs:
       
       - name: Install OpenGL for Ubuntu
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+          version: 1.0
+        # run: sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
       
       - name: Run CMake+vcpkg+Ninja to generate/build
         uses: lukka/run-cmake@v10
