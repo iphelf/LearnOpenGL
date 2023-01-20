@@ -23,6 +23,7 @@ add_library(iphelf-opengl
         src/window.h)
 target_include_directories(iphelf-opengl PUBLIC include)
 target_link_libraries(iphelf-opengl
-        PRIVATE glfw OpenGL::GL glad::glad glm::glm)
+        PRIVATE glfw OpenGL::GL glad::glad
+        PUBLIC glm::glm)
 target_include_directories(iphelf-opengl
         PRIVATE ${Stb_INCLUDE_DIR})
