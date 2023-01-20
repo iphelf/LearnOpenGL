@@ -4,7 +4,7 @@
 #include <map>
 #include <numeric>
 
-#include "gl.h"
+#include "external/gl.h"
 
 namespace iphelf::opengl {
 

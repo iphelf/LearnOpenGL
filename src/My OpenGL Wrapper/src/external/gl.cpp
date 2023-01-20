@@ -1,6 +1,6 @@
 #include "gl.h"
 
-#include <glad/gl.h>
+#include <glad/glad.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -19,7 +19,8 @@ GL &gl() {
 
 GL::GL() {
   // Initialize OpenGL with GLAD
-  if (!gladLoadGL(glfw().get_proc_address))
+  if (!gladLoadGLLoader(
+          reinterpret_cast<GLADloadproc>(glfw().get_proc_address)))
     throw std::runtime_error("Failed to initialize GLAD");
 }
 

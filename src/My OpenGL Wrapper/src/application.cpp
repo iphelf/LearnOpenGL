@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-#include "gl.h"
+#include "external/gl.h"
 #include "window.h"
 
 namespace iphelf::opengl {

@@ -1,6 +1,6 @@
 #include "shader.h"
 
-#include "gl.h"
+#include "external/gl.h"
 
 namespace iphelf::opengl {
 

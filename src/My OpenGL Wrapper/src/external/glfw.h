@@ -1,10 +1,10 @@
 #pragma once
 
-#include <iphelf/opengl/input.h>
-
 #include <chrono>
 #include <functional>
 #include <string>
+
+#include "iphelf/opengl/input.h"
 
 struct GLFWwindow;
 
@@ -33,7 +33,8 @@ class GLFW {
   void enable_cursor_capture(GLFWwindow *w, bool enabled = true);
   using cursor_pos_callback_t = void (*)(GLFWwindow *, double x, double y);
   void set_cursor_pos_callback(GLFWwindow *w, cursor_pos_callback_t callback);
-  using scroll_callback_t = void (*)(GLFWwindow *, double offset_x, double offset_y);
+  using scroll_callback_t = void (*)(GLFWwindow *, double offset_x,
+                                     double offset_y);
   void set_scroll_callback(GLFWwindow *w, scroll_callback_t callback);
 
   // render loop

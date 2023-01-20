@@ -1,10 +1,10 @@
 #include <iphelf/opengl/texture.h>
-#include <stb/stb_image.h>
+#include <stb_image.h>
 
 #include <iostream>
 #include <map>
 
-#include "gl.h"
+#include "external/gl.h"
 
 namespace iphelf::opengl {
 

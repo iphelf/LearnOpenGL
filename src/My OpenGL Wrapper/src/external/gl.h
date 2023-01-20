@@ -1,11 +1,11 @@
 #pragma once
 
-#include <iphelf/opengl/color.h>
-#include <iphelf/opengl/texture.h>
-#include <iphelf/opengl/trianglearray.h>
-
 #include <glm/fwd.hpp>
 #include <span>
+
+#include "iphelf/opengl/color.h"
+#include "iphelf/opengl/texture.h"
+#include "iphelf/opengl/trianglearray.h"
 
 namespace iphelf::opengl {
 

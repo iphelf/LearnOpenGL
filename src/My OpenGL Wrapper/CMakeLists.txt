@@ -9,17 +9,20 @@ add_library(iphelf-opengl
         src/application.cpp
         src/camera.cpp
         src/color.cpp
-        src/gl.cpp
-        src/gl.h
-        src/glfw.cpp
-        src/glfw.h
+        src/external/gl.cpp
+        src/external/gl.h
+        src/external/glfw.cpp
+        src/external/glfw.h
         src/program.cpp
         src/shader.cpp
         src/shader.h
+        src/external/stb_image.cpp
         src/texture.cpp
         src/trianglearray.cpp
         src/window.cpp
         src/window.h)
 target_include_directories(iphelf-opengl PUBLIC include)
 target_link_libraries(iphelf-opengl
-        PRIVATE glfw OpenGL::GL glad stb_image glm::glm)
+        PRIVATE glfw OpenGL::GL glad::glad glm::glm)
+target_include_directories(iphelf-opengl
+        PRIVATE ${Stb_INCLUDE_DIR})

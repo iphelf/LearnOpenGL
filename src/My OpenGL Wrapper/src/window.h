@@ -4,8 +4,8 @@
 
 #include <memory>
 
-#include "gl.h"
-#include "glfw.h"
+#include "external/gl.h"
+#include "external/glfw.h"
 
 struct GLFWwindow;
 

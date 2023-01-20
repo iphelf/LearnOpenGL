@@ -4,7 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-#include "gl.h"
+#include "external/gl.h"
 #include "shader.h"
 
 namespace iphelf::opengl {
