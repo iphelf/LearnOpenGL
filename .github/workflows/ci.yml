@@ -28,6 +28,7 @@ jobs:
         with:
           vcpkgJsonGlob: 'vcpkg.json'
       - uses: lukka/run-cmake@v10
-      - uses: openrndr/setup-opengl@v1.1
+      - name: Install OpenGL for system
+        run: sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
       - run: cmake --preset ninja-multi-vcpkg
       - run: cmake --build --preset ninja-multi-vcpkg --config Release
