@@ -1,0 +1,51 @@
+name: CI for build
+
+run-name: ${{ github.actor }} triggered a build with a push
+
+on:
+  push:
+    branches:
+      - try-ci
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    env:
+      # Indicates the location of the vcpkg as a Git submodule of the project repository.
+      VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+      # Tells vcpkg where binary packages are stored.
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg/bincache
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            submodules: true
+      
+      - uses: lukka/get-cmake@latest
+  
+      - uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgJsonGlob: 'vcpkg.json'
+      
+      - name: Install OpenGL for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+          version: 1.0
+        # run: sudo apt install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
+      
+      - name: Run CMake+vcpkg+Ninja to generate/build
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: 'ninja-multi-vcpkg'
+          buildPreset: 'ninja-multi-vcpkg'
+          buildPresetAdditionalArgs: "[`--config`, `Release`]"
+        env:
+          VCPKG_FORCE_SYSTEM_BINARIES: 1
