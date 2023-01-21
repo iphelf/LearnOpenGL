@@ -4,7 +4,6 @@
 #include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 
 const auto path_shaders{std::filesystem::current_path() / "shaders"};
 const auto path_textures{std::filesystem::current_path() / "textures"};
@@ -82,7 +81,6 @@ class Camera : public iphelf::opengl::Application {
     });
     add_scroll_callback([this](double, double offset_y) {
       const double sensitivity{5};
-      std::cout << offset_y << '\r' << std::flush;
       fov = std::clamp(fov - offset_y * sensitivity, 5.0, 90.0);
     });
   }

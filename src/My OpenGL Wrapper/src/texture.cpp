@@ -16,7 +16,7 @@ Texture::Texture(const std::filesystem::path& path_texture,
   int n_channels;
   stbi_set_flip_vertically_on_load(true);
   std::unique_ptr<unsigned char, decltype(&stbi_image_free)> image_data(
-      stbi_load(path_texture.c_str(), &width, &height, &n_channels, 0),
+      stbi_load(path_texture.string().c_str(), &width, &height, &n_channels, 0),
       &stbi_image_free);
   if (!image_data)
     throw std::runtime_error("Failed to load image from " +
