@@ -145,8 +145,9 @@ class CoordinateSystems : public iphelf::opengl::Application {
     std::vector<glm::mat4> blocks;
     blocks.reserve(std::accumulate(
         level.is_block.begin(), level.is_block.end(), 0,
-        [](auto acc, const auto &row) {
-          return acc + std::count_if(row.begin(), row.end(), std::identity{});
+        [](int acc, const auto &row) {
+          return acc + static_cast<int>(std::count_if(row.begin(), row.end(),
+                                                      std::identity{}));
         }));
     glm::vec3 base{(1 - static_cast<float>(level.size.second)) * 0.5f, 0.5f,
                    (1 - static_cast<float>(level.size.first)) * 0.5f};
