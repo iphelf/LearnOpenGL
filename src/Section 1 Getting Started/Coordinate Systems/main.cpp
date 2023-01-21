@@ -73,10 +73,10 @@ class CoordinateSystems : public iphelf::opengl::Application {
                    max_v = static_cast<float>(level.size.first)] {
         return create_triangle_array<5>(
             {
-                {-0.5, 0, 0.5, 0, 0},
-                {0.5, 0, 0.5, max_u, 0},
-                {0.5, 0, -0.5, max_u, max_v},
-                {-0.5, 0, -0.5, 0, max_v},
+                {-0.5f, 0.0f, 0.5f, 0.0f, 0.0f},
+                {0.5f, 0.0f, 0.5f, max_u, 0.0f},
+                {0.5f, 0.0f, -0.5f, max_u, max_v},
+                {-0.5f, 0.0f, -0.5f, 0.0f, max_v},
             },
             {
                 {0, 1, 2},

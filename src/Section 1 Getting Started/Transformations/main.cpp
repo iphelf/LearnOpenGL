@@ -21,10 +21,10 @@ class Transformations : public iphelf::opengl::Application {
     program = create_program(path_vs, path_fs);
     object = create_triangle_array<4>(
         {
-            {-1, -1, 0, 0},
-            {1, -1, 1, 0},
-            {1, 1, 1, 1},
-            {-1, 1, 0, 1},
+            {-1.0f, -1.0f, 0.0f, 0.0f},
+            {1.0f, -1.0f, 1.0f, 0.0f},
+            {1.0f, 1.0f, 1.0f, 1.0f},
+            {-1.0f, 1.0f, 0.0f, 1.0f},
         },
         {
             {0, 1, 2},

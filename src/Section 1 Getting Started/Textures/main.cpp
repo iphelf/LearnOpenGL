@@ -59,10 +59,10 @@ class Textures : public iphelf::opengl::Application {
     // tiled wall as the background
     triangles_background = create_triangle_array<4>(
         {
-            {-1, -1, 0, 0},
-            {1, -1, 3, 0},
-            {1, 1, 3, 3},
-            {-1, 1, 0, 3},
+            {-1.0f, -1.0f, 0.0f, 0.0f},
+            {1.0f, -1.0f, 3.0f, 0.0f},
+            {1.0f, 1.0f, 3.0f, 3.0f},
+            {-1.0f, 1.0f, 0.0f, 3.0f},
         },
         {
             {0, 1, 2},
@@ -75,10 +75,10 @@ class Textures : public iphelf::opengl::Application {
     // mirrored faces in the second quarter
     triangles_mirrored_faces = create_triangle_array<4>(
         {
-            {-0.85, 0.15, 0, 0},
-            {-0.15, 0.15, 2, 0},
-            {-0.15, 0.85, 2, 2},
-            {-0.85, 0.85, 0, 2},
+            {-0.85f, 0.15f, 0.0f, 0.0f},
+            {-0.15f, 0.15f, 2.0f, 0.0f},
+            {-0.15f, 0.85f, 2.0f, 2.0f},
+            {-0.85f, 0.85f, 0.0f, 2.0f},
         },
         {
             {0, 1, 2},
@@ -91,10 +91,10 @@ class Textures : public iphelf::opengl::Application {
     // bordered face in the first quarter
     triangles_bordered_faces = create_triangle_array<4>(
         {
-            {0.15, 0.15, -0.5, -0.5},
-            {0.85, 0.15, 1.5, -0.5},
-            {0.85, 0.85, 1.5, 1.5},
-            {0.15, 0.85, -0.5, 1.5},
+            {0.15f, 0.15f, -0.5f, -0.5f},
+            {0.85f, 0.15f, 1.5f, -0.5f},
+            {0.85f, 0.85f, 1.5f, 1.5f},
+            {0.15f, 0.85f, -0.5f, 1.5f},
         },
         {
             {0, 1, 2},
@@ -108,10 +108,10 @@ class Textures : public iphelf::opengl::Application {
     // edged container in the third quarter
     triangles_edged_container = create_triangle_array<4>(
         {
-            {-0.85, -0.85, -0.5, -0.5},
-            {-0.15, -0.85, 1.5, -0.5},
-            {-0.15, -0.15, 1.5, 1.5},
-            {-0.85, -0.15, -0.5, 1.5},
+            {-0.85f, -0.85f, -0.5f, -0.5f},
+            {-0.15f, -0.85f, 1.5f, -0.5f},
+            {-0.15f, -0.15f, 1.5f, 1.5f},
+            {-0.85f, -0.15f, -0.5f, 1.5f},
         },
         {
             {0, 1, 2},
@@ -132,10 +132,10 @@ class Textures : public iphelf::opengl::Application {
         iphelf::opengl::Texture::FilterType::Nearest);
     triangles_blending = create_triangle_array<7>(
         {
-            {0.15, -0.85, 0, 0, 0, 0, 1},
-            {0.85, -0.85, 1, 0, 0, 1, 0},
-            {0.85, -0.15, 1, 1, 1, 0, 0},
-            {0.15, -0.15, 0, 1, 1, 1, 0},
+            {0.15f, -0.85f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f},
+            {0.85f, -0.85f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f},
+            {0.85f, -0.15f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
+            {0.15f, -0.15f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f},
         },
         {
             {0, 1, 2},

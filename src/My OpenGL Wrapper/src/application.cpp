@@ -9,13 +9,9 @@ namespace iphelf::opengl {
 
 struct Application::Impl {
   Window window;
-  static std::vector<CursorPosCallback>
-      cursor_pos_callbacks;  // rough workaround to eliminate capturing
   std::chrono::duration<double> delta_time{};
   explicit Impl(Window &&window) : window{std::move(window)} {}
 };
-std::vector<Application::CursorPosCallback>
-    Application::Impl::cursor_pos_callbacks;
 
 Application::Application(int width, int height, const std::string &title)
     : self(std::make_unique<Impl>(Window{width, height, title})) {}
