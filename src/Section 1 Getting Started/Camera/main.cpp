@@ -1,5 +1,6 @@
 #include <iphelf/opengl/application.h>
 
+#include <algorithm>
 #include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

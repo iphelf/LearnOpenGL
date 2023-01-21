@@ -120,9 +120,9 @@ void GL::setup_vertex_attributes(const std::vector<int> &attribute_sizes) {
   for (std::size_t index{0}, offset{0}; index < attribute_sizes.size();
        offset += attribute_sizes[index++]) {
     auto ugly_offset{reinterpret_cast<const void *>(offset * sizeof(float))};
-    glVertexAttribPointer(index, attribute_sizes[index], GL_FLOAT, GL_FALSE,
-                          stride, ugly_offset);
-    glEnableVertexAttribArray(index);
+    glVertexAttribPointer(static_cast<GLuint>(index), attribute_sizes[index],
+                          GL_FLOAT, GL_FALSE, stride, ugly_offset);
+    glEnableVertexAttribArray(static_cast<GLuint>(index));
   }
 }
 
