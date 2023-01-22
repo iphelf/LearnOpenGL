@@ -10,7 +10,7 @@ const auto path_textures{std::filesystem::current_path() / "textures"};
 
 class Camera : public iphelf::opengl::Application {
   const iphelf::opengl::Program program{create_program(
-      path_shaders / "pos_uv.v.glsl", path_shaders / "image.f.glsl")};
+      path_shaders / "transform_uv.v.glsl", path_shaders / "image.f.glsl")};
   const iphelf::opengl::Texture image{
       create_texture(path_textures / "awesomeface.png")};
   const iphelf::opengl::TriangleArray cube{std::invoke([] {

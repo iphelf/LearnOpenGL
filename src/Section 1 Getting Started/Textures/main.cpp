@@ -7,11 +7,11 @@
 const auto path_shaders = std::filesystem::current_path() / "shaders";
 
 // Each vertex has two attributes (pos: vec2, uv: vec2)
-const auto path_vs_pos_uv = path_shaders / "pos_uv.v.glsl";
+const auto path_vs_pos_uv = path_shaders / "xy_uv.v.glsl";
 const auto path_fs_image = path_shaders / "image.f.glsl";
 
 // Each vertex has three attributes (pos: vec2, uv: vec2, color: vec3)
-const auto path_vs_pos_uv_color = path_shaders / "pos_uv_color.v.glsl";
+const auto path_vs_pos_uv_color = path_shaders / "xy_uv_rgb.v.glsl";
 const auto path_fs_blend = path_shaders / "blend.f.glsl";
 
 const auto path_textures = std::filesystem::current_path() / "textures";

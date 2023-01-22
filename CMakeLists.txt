@@ -19,3 +19,5 @@ find_package(glad REQUIRED)
 find_package(Stb REQUIRED)
 
 add_subdirectory(src)
+
+file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

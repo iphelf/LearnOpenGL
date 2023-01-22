@@ -1,1 +1,1 @@
-../../Coordinate Systems/shaders/image.f.glsl
+../../../../res/Shaders/image.f.glsl

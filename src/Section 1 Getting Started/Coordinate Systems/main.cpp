@@ -7,7 +7,7 @@
 #include <numeric>
 
 const auto path_shaders = std::filesystem::current_path() / "shaders";
-const auto path_vs = path_shaders / "pos_uv.v.glsl";
+const auto path_vs = path_shaders / "transform_uv.v.glsl";
 const auto path_fs = path_shaders / "image.f.glsl";
 
 const auto path_textures = std::filesystem::current_path() / "textures";
