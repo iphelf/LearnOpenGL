@@ -74,7 +74,7 @@ class Application {
     return {pos, up, front, sensitivity};
   }
 
-  // check keyboard
+  // handle inputs
   [[nodiscard]] bool is_down(Key key) const;
   [[nodiscard]] bool is_down(MouseButton mouse_button) const;
   [[nodiscard]] bool just_changed_to(Key key, bool pressed) const;
@@ -97,6 +97,7 @@ class Application {
   void add_cursor_pos_callback(CursorPosCallback &&callback);
   using ScrollCallback = std::function<void(double offset_x, double offset_y)>;
   void add_scroll_callback(ScrollCallback &&callback);
+  void bind_default_camera_controller(Camera &camera);
 
   // check time (in seconds)
   static float elapsed_seconds();

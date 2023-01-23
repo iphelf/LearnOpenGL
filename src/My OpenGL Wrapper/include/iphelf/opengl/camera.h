@@ -22,7 +22,10 @@ class Camera {
   void rotate(float delta_yaw, float delta_pitch, bool constrained = true);
   void move(float delta_forward, float delta_right);
   void ascend(float delta_up);
+  void zoom(double delta);
+  void reset_zoom();
   [[nodiscard]] glm::mat4 world2view() const;
+  [[nodiscard]] double fov() const;
 };
 
 }  // namespace iphelf::opengl

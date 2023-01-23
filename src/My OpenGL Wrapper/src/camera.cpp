@@ -26,14 +26,16 @@ struct Camera::Impl {
   float yaw{0};                 // in degrees (default when without suffix)
   float pitch{0};               // in degrees (default when without suffix)
   const float sensitivity;
+  const double default_fov{45.0};
+  double fov{default_fov};
   Impl(const glm::vec3& pos, const glm::vec3& up, const glm::vec3& front,
-       float sensitivity)
+       float rotation_sensitivity)
       : pos{pos},
         up{glm::normalize(up)},
         front{glm::normalize(glm::cross(this->up, glm::cross(front, up)))},
         orientation{glm::mat3{glm::cross(this->front, this->up), this->front,
                               this->up}},
-        sensitivity{sensitivity} {
+        sensitivity{rotation_sensitivity} {
     recompute_front();
   }
   void recompute_front() { front = orientation * direction(yaw, pitch); }
@@ -80,8 +82,17 @@ void Camera::ascend(float delta_up) {
   self->pos += self->up * delta_up;
 }
 
+void Camera::zoom(double delta) {
+  const double zoom_sensitivity{5};
+  self->fov = std::clamp(self->fov - delta * zoom_sensitivity, 5.0, 90.0);
+}
+
+void Camera::reset_zoom() { self->fov = self->default_fov; }
+
 glm::mat4 Camera::world2view() const {
   return glm::lookAt(self->pos, self->pos + self->front, self->up);
 }
+
+double Camera::fov() const { return self->fov; }
 
 }  // namespace iphelf::opengl
