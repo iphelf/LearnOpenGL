@@ -69,9 +69,10 @@ class Application {
   }
 
   static inline Camera create_camera(const glm::vec3 &pos, const glm::vec3 &up,
-                                     const glm::vec3 &front,
+                                     const glm::vec3 &front, float yaw = 0.0f,
+                                     float pitch = 0.0f,
                                      float sensitivity = 0.1f) {
-    return {pos, up, front, sensitivity};
+    return {pos, up, front, yaw, pitch, sensitivity};
   }
 
   // handle inputs

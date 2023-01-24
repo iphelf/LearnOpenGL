@@ -12,7 +12,7 @@ class Camera {
   friend class Application;
 
   Camera(const glm::vec3& pos, const glm::vec3& up, const glm::vec3& front,
-         float sensitivity);
+         float yaw, float pitch, float sensitivity);
 
  public:
   Camera(Camera&& other) noexcept;

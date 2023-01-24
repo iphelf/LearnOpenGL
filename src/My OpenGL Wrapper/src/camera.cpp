@@ -23,18 +23,20 @@ struct Camera::Impl {
   const glm::vec3 up;           // world
   glm::vec3 front;              // world
   const glm::mat3 orientation;  // local to world
-  float yaw{0};                 // in degrees (default when without suffix)
-  float pitch{0};               // in degrees (default when without suffix)
+  float yaw;                    // in degrees (default when without suffix)
+  float pitch;                  // in degrees (default when without suffix)
   const float sensitivity;
   const double default_fov{45.0};
   double fov{default_fov};
   Impl(const glm::vec3& pos, const glm::vec3& up, const glm::vec3& front,
-       float rotation_sensitivity)
+       float yaw, float pitch, float rotation_sensitivity)
       : pos{pos},
         up{glm::normalize(up)},
         front{glm::normalize(glm::cross(this->up, glm::cross(front, up)))},
         orientation{glm::mat3{glm::cross(this->front, this->up), this->front,
                               this->up}},
+        yaw{yaw},
+        pitch{pitch},
         sensitivity{rotation_sensitivity} {
     recompute_front();
   }
@@ -42,8 +44,9 @@ struct Camera::Impl {
 };
 
 Camera::Camera(const glm::vec3& pos, const glm::vec3& up,
-               const glm::vec3& front, float sensitivity)
-    : self{std::make_unique<Impl>(pos, up, front, sensitivity)} {}
+               const glm::vec3& front, float yaw, float pitch,
+               float sensitivity)
+    : self{std::make_unique<Impl>(pos, up, front, yaw, pitch, sensitivity)} {}
 
 Camera::Camera(Camera&& other) noexcept : self{nullptr} {
   *this = std::move(other);
