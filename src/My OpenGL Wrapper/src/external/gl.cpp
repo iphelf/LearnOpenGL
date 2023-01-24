@@ -38,7 +38,7 @@ void GL::enable_depth_test(bool enabled) {
 }
 
 void GL::set_clear_color(const Color &color) {
-  glClearColor(color.r, color.g, color.b, color.a);
+  glClearColor(color.r, color.g, color.b, 1.0f);
 }
 
 void GL::clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
@@ -258,7 +258,7 @@ int GL::get_uniform_location(int po, const std::string &name) {
 }
 
 void GL::set_uniform(int location, const Color &color) {
-  glUniform4f(location, color.r, color.g, color.b, color.a);
+  glUniform3f(location, color.r, color.g, color.b);
 }
 
 void GL::set_uniform(int location, int number) {

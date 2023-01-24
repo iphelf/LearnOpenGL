@@ -9,7 +9,7 @@ const auto path_shaders{std::filesystem::current_path() / "shaders"};
 class Colors : public iphelf::opengl::Application {
   iphelf::opengl::Camera camera{
       create_camera(glm::vec3{2.0f, -2.0f, 2.0f}, {0.0f, 0.0f, 1.0f},
-                    {1.0f, 0.0f, 0.0f}, -135.0f, -30.0f)};
+                    {-1.0f, 1.0f, -1.0f}, 0.0f, -20.0f)};
   const iphelf::opengl::Program program_light{create_program(
       path_shaders / "light.v.glsl", path_shaders / "light.f.glsl")};
   const iphelf::opengl::Program program_object{create_program(
@@ -35,17 +35,14 @@ class Colors : public iphelf::opengl::Application {
     return model2world;
   })};
   const glm::mat4 object_model2world{1.0f};
-  const iphelf::opengl::Color light_color{iphelf::opengl::Color::White};
   const iphelf::opengl::Color object_color{iphelf::opengl::Color::Orange};
 
  public:
   Colors() : Application(800, 600, "Colors") {
     enable_depth_test();
     bind_default_camera_controller(camera);
-    program_light.with_uniform("u_light_color", light_color);
     program_light.with_uniform("u_model2world", light_model2world);
     program_object.with_uniform("u_object_color", object_color);
-    program_object.with_uniform("u_light_color", light_color);
     program_object.with_uniform("u_model2world", object_model2world);
   }
 
@@ -55,12 +52,18 @@ class Colors : public iphelf::opengl::Application {
     auto view2clip{glm::perspective(glm::radians(camera.fov()), 800.0 / 600.0,
                                     0.1, 100.0)};
     auto world2view{camera.world2view()};
+    static float hue{0.0f};
+    auto light_color{iphelf::opengl::Color::from_hsv(hue, 1.0f, 1.0f)};
+    program_light.with_uniform("u_light_color", light_color);
     program_light.with_uniform("u_world2view", world2view);
     program_light.with_uniform("u_view2clip", view2clip);
     program_light.render(cube);
+    program_object.with_uniform("u_light_color", light_color);
     program_object.with_uniform("u_world2view", world2view);
     program_object.with_uniform("u_view2clip", view2clip);
     program_object.render(cube);
+    hue += delta_seconds() * 60.0f;
+    if (hue > 360.0f) hue -= 360.0f;
   }
 };
 
