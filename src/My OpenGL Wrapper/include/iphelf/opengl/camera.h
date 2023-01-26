@@ -24,6 +24,7 @@ class Camera {
   void ascend(float delta_up);
   void zoom(double delta);
   void reset_zoom();
+  [[nodiscard]] glm::vec3 pos() const;
   [[nodiscard]] glm::mat4 world2view() const;
   [[nodiscard]] double fov() const;
 };

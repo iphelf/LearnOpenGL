@@ -73,6 +73,8 @@ class GL {
   void set_uniform(int location, const Color &color);
   void set_uniform(int location, int number);
   void set_uniform(int location, float number);
+  void set_uniform(int location, const glm::vec3 &vector);
+  void set_uniform(int location, const glm::mat3 &matrix);
   void set_uniform(int location, const glm::mat4 &matrix);
 };
 

@@ -60,6 +60,20 @@ void Program::with_uniform(const std::string &name, float number) const {
 }
 
 void Program::with_uniform(const std::string &name,
+                           const glm::vec3 &vector) const {
+  use();
+  auto location = get_uniform_location(name);
+  gl().set_uniform(location, vector);
+}
+
+void Program::with_uniform(const std::string &name,
+                           const glm::mat3 &matrix) const {
+  use();
+  auto location = get_uniform_location(name);
+  gl().set_uniform(location, matrix);
+}
+
+void Program::with_uniform(const std::string &name,
                            const glm::mat4 &matrix) const {
   use();
   auto location = get_uniform_location(name);

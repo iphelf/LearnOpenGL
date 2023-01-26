@@ -92,6 +92,8 @@ void Camera::zoom(double delta) {
 
 void Camera::reset_zoom() { self->fov = self->default_fov; }
 
+glm::vec3 Camera::pos() const { return self->pos; }
+
 glm::mat4 Camera::world2view() const {
   return glm::lookAt(self->pos, self->pos + self->front, self->up);
 }

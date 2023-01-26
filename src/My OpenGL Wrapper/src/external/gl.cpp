@@ -269,6 +269,14 @@ void GL::set_uniform(int location, float number) {
   glUniform1f(location, number);
 }
 
+void GL::set_uniform(int location, const glm::vec3 &vector) {
+  glUniform3f(location, vector.x, vector.y, vector.z);
+}
+
+void GL::set_uniform(int location, const glm::mat3 &matrix) {
+  glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
 void GL::set_uniform(int location, const glm::mat4 &matrix) {
   glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
