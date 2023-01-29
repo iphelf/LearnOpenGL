@@ -20,13 +20,11 @@ Instance::~Instance() {
 
 void Instance::install_callbacks() { ImGui_ImplGlfw_InstallCallbacks(w); }
 
-void Instance::new_frame() {
+void Instance::render(std::function<void(void)> &&routine) {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
-}
-
-void Instance::render() {
+  routine();
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

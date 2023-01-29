@@ -119,14 +119,7 @@ class Colors : public iphelf::opengl::Application {
       if (phase > 360.0f) phase -= 360.0f;
     }
 
-    render_ui();
-  }
-  void render_ui() {
-    imgui.new_frame();
-
-    ImGui::ShowDemoWindow();
-
-    imgui.render();
+    imgui.render([] { ImGui::ShowDemoWindow(); });
   }
 };
 

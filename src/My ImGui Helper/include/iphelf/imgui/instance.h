@@ -2,6 +2,8 @@
 
 #include <imgui.h>
 
+#include <functional>
+
 struct GLFWwindow;
 
 namespace iphelf::imgui {
@@ -17,11 +19,10 @@ class Instance {
   // Note: call this after all other callbacks have been installed
   void install_callbacks();
 
-  // Calls all necessary *NewFrame()
-  void new_frame();
-
-  // Calls Render() and *RenderDrawData()
-  void render();
+  // Calls all necessary *NewFrame() before,
+  // and Render() and *RenderDrawData() after,
+  // calling routine()
+  void render(std::function<void(void)> &&routine);
 };
 
 }  // namespace iphelf::imgui
