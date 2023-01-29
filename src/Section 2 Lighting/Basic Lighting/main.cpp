@@ -80,7 +80,7 @@ class Colors : public iphelf::opengl::Application {
 
  private:
   void render() override {
-    clear(iphelf::opengl::Color::DarkGreenBluish);
+    clear(iphelf::opengl::Color::Black);
 
     auto view2clip{glm::perspective(glm::radians(camera.fov()), 800.0 / 600.0,
                                     0.1, 100.0)};
@@ -107,8 +107,12 @@ class Colors : public iphelf::opengl::Application {
     program_object.with_uniform("u_view2clip", view2clip);
     program_object.render(cube);
 
-    phase += delta_seconds() * 60.0f;
-    if (phase > 360.0f) phase -= 360.0f;
+    static bool pause_phase{false};
+    if (just_released(iphelf::opengl::Key::Space)) pause_phase = !pause_phase;
+    if (!pause_phase) {
+      phase += delta_seconds() * 60.0f;
+      if (phase > 360.0f) phase -= 360.0f;
+    }
   }
 };
 

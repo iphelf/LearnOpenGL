@@ -11,6 +11,7 @@ enum class Key {
   Left,
   Right,
   Tab,
+  Space,
   _1,
   _2,
   _3,

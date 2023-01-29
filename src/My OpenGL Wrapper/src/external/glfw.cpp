@@ -59,6 +59,7 @@ bool GLFW::is_key_down(GLFWwindow *w, Key k) {
       {Key::Left, GLFW_KEY_LEFT},
       {Key::Right, GLFW_KEY_RIGHT},
       {Key::Tab, GLFW_KEY_TAB},
+      {Key::Space, GLFW_KEY_SPACE},
       {Key::_0, GLFW_KEY_0},
       {Key::_1, GLFW_KEY_1},
       {Key::_2, GLFW_KEY_2},
