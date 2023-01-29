@@ -1,3 +1,4 @@
+#include <iphelf/imgui/instance.h>
 #include <iphelf/opengl/application.h>
 
 #include <functional>
@@ -14,46 +15,48 @@ class Colors : public iphelf::opengl::Application {
       path_shaders / "light.v.glsl", path_shaders / "light.f.glsl")};
   const iphelf::opengl::Program program_object{create_program(
       path_shaders / "object.v.glsl", path_shaders / "object.f.glsl")};
-  const iphelf::opengl::TriangleArray cube{create_triangle_array<6>(
-      {
-          {{-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-           {0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-           {0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f}},
-          {{0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-           {-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
-           {-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f}},
-          {{-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-           {0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-           {0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f}},
-          {{0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-           {-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
-           {-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f}},
-          {{-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f},
-           {-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f},
-           {-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f}},
-          {{-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f},
-           {-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f},
-           {-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f}},
-          {{0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f},
-           {0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f},
-           {0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f}},
-          {{0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f},
-           {0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f},
-           {0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f}},
-          {{-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f},
-           {0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f},
-           {0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f}},
-          {{0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f},
-           {-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f},
-           {-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f}},
-          {{-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f},
-           {0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f},
-           {0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f}},
-          {{0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-           {-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
-           {-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f}},
-      },
-      {3, 3})};
+  const iphelf::opengl::TriangleArray cube{std::invoke([] {
+    return create_triangle_array<6>(
+        {
+            {{-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
+             {0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
+             {0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f}},
+            {{0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
+             {-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f},
+             {-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f}},
+            {{-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
+             {0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
+             {0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f}},
+            {{0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
+             {-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f},
+             {-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f}},
+            {{-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f},
+             {-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f},
+             {-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f}},
+            {{-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f},
+             {-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f},
+             {-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f}},
+            {{0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f},
+             {0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f},
+             {0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f}},
+            {{0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f},
+             {0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f},
+             {0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f}},
+            {{-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f},
+             {0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f},
+             {0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f}},
+            {{0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f},
+             {-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f},
+             {-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f}},
+            {{-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f},
+             {0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f},
+             {0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f}},
+            {{0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
+             {-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f},
+             {-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f}},
+        },
+        {3, 3});
+  })};
   const glm::mat4 light_model2world{std::invoke([] {
     glm::mat4 model2world{1.0f};
     model2world = glm::translate(model2world, glm::vec3{0.0f, 2.0f, 2.0f});
@@ -62,11 +65,13 @@ class Colors : public iphelf::opengl::Application {
   })};
   const glm::mat4 object_model2world{1.0f};
   const iphelf::opengl::Color object_color{iphelf::opengl::Color::Orange};
+  iphelf::imgui::Instance imgui{get_glfw_window()};
 
  public:
   Colors() : Application(800, 600, "Basic Lighting") {
     enable_depth_test();
     bind_default_camera_controller(camera);
+    imgui.install_callbacks();
     program_object.with_uniform("u_object_color", object_color);
     program_object.with_uniform("u_model2world", object_model2world);
     program_object.with_uniform(
@@ -113,6 +118,15 @@ class Colors : public iphelf::opengl::Application {
       phase += delta_seconds() * 60.0f;
       if (phase > 360.0f) phase -= 360.0f;
     }
+
+    render_ui();
+  }
+  void render_ui() {
+    imgui.new_frame();
+
+    ImGui::ShowDemoWindow();
+
+    imgui.render();
   }
 };
 

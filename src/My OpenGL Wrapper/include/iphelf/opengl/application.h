@@ -11,6 +11,8 @@
 #include "texture.h"
 #include "trianglearray.h"
 
+struct GLFWwindow;
+
 namespace iphelf::opengl {
 
 class Application {
@@ -107,6 +109,9 @@ class Application {
   // render stuff
   static void clear(const Color &color);
   static void enable_depth_test(bool enabled = true);
+
+  // get glfw window handle
+  GLFWwindow *get_glfw_window();
 };
 
 }  // namespace iphelf::opengl

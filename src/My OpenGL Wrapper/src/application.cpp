@@ -64,6 +64,7 @@ Application::~Application() = default;
 void Application::run() {
   std::chrono::duration<double> last_frame{-1.0 / 60.0};
   while (!self->window.should_close()) {
+    glfw().poll_events();
     if (self->window.is_down(Key::Escape)) self->window.set_should_close();
     auto curr_frame = glfw().get_time();
     self->delta_time = curr_frame - last_frame;
@@ -71,7 +72,6 @@ void Application::run() {
     if (self->camera_controller) self->camera_controller->handle_inputs(*this);
     render();
     self->window.swap_buffers();
-    glfw().poll_events();
   }
 }
 
@@ -139,5 +139,7 @@ void Application::clear(const Color &color) {
 void Application::enable_depth_test(bool enabled) {
   gl().enable_depth_test(enabled);
 }
+
+GLFWwindow *Application::get_glfw_window() { return self->window.get_handle(); }
 
 }  // namespace iphelf::opengl

@@ -35,6 +35,8 @@ class Window {
   [[nodiscard]] bool is_down(Key key) const;
   [[nodiscard]] bool is_down(MouseButton mouse_button) const;
   void swap_buffers();
+
+  GLFWwindow *get_handle();
 };
 
 }  // namespace iphelf::opengl

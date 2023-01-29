@@ -156,4 +156,6 @@ bool Window::is_down(MouseButton mouse_button) const {
 
 void Window::swap_buffers() { glfw().swap_buffers(self->w); }
 
+GLFWwindow *Window::get_handle() { return self->w; }
+
 }  // namespace iphelf::opengl
