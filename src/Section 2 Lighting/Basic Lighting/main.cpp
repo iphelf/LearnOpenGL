@@ -86,10 +86,15 @@ class Colors : public iphelf::opengl::Application {
     auto view2clip{glm::perspective(glm::radians(camera.fov()), 800.0 / 600.0,
                                     0.1, 100.0)};
     auto world2view{camera.world2view()};
-    static float phase{0.0f};
-    auto light_color{iphelf::opengl::Color::from_hsv(phase, 1.0f, 1.0f)};
+    static float phase_hue{0.0f};
+    static bool specify_light_color{false};
+    static iphelf::opengl::Color specified_light_color;
+    auto light_color{specify_light_color ? specified_light_color
+                                         : iphelf::opengl::Color::from_hsv(
+                                               phase_hue, 1.0f, 1.0f)};
+    static float phase_rotation{0.0f};
     auto rotated_light_model2world{glm::rotate(glm::mat4{1.0f},
-                                               glm::radians(phase),
+                                               glm::radians(phase_rotation),
                                                glm::vec3{0.0f, 0.0f, 1.0f}) *
                                    light_model2world};
 
@@ -116,16 +121,25 @@ class Colors : public iphelf::opengl::Application {
     program_object.with_uniform("u_shininess", shininess);
     program_object.render(cube);
 
+    static bool pause_phase_hue{false};
+    static bool pause_phase_rotation{false};
     {
-      static bool pause_phase{false};
-      if (just_released(iphelf::opengl::Key::Space)) pause_phase = !pause_phase;
-      if (!pause_phase) {
-        phase += delta_seconds() * 60.0f;
+      auto increment_phase{[](float &phase, float delta) {
+        phase += delta;
         if (phase > 360.0f) phase -= 360.0f;
-      }
+      }};
+      float delta{delta_seconds() * 60.0f};
+      if (!pause_phase_hue) increment_phase(phase_hue, delta);
+      if (!pause_phase_rotation) increment_phase(phase_rotation, delta);
     }
 
     imgui.render([] {
+      ImGui::Checkbox("pause light rotation", &pause_phase_rotation);
+      ImGui::Checkbox("pause light hue update", &pause_phase_hue);
+      ImGui::Checkbox("specify light color", &specify_light_color);
+      ImGui::BeginDisabled(!specify_light_color);
+      { ImGui::ColorEdit3("light color", &specified_light_color.r); }
+      ImGui::EndDisabled();
       ImGui::SliderFloat("ambient strength", &ambient_strength, 0.0f, 1.0f,
                          "%.2f");
       ImGui::SliderFloat("diffuse strength", &diffuse_strength, 0.0f, 1.0f,
