@@ -13,8 +13,12 @@ class Colors : public iphelf::opengl::Application {
                     {-1.0f, 1.0f, -1.0f}, 0.0f, -20.0f)};
   const iphelf::opengl::Program program_light{create_program(
       path_shaders / "light.v.glsl", path_shaders / "light.f.glsl")};
-  const iphelf::opengl::Program program_object{create_program(
-      path_shaders / "object.v.glsl", path_shaders / "object.f.glsl")};
+  const iphelf::opengl::Program program_object_phong{
+      create_program(path_shaders / "object_phong.v.glsl",
+                     path_shaders / "object_phong.f.glsl")};
+  const iphelf::opengl::Program program_object_gouraud{
+      create_program(path_shaders / "object_gouraud.v.glsl",
+                     path_shaders / "object_gouraud.f.glsl")};
   const iphelf::opengl::TriangleArray cube{std::invoke([] {
     return create_triangle_array<6>(
         {
@@ -72,11 +76,16 @@ class Colors : public iphelf::opengl::Application {
     enable_depth_test();
     bind_default_camera_controller(camera);
     imgui.install_callbacks();
-    program_object.with_uniform("u_object_color", object_color);
-    program_object.with_uniform("u_model2world", object_model2world);
-    program_object.with_uniform(
-        "u_model2world_normalized",
-        glm::mat3{glm::transpose(glm::inverse(object_model2world))});
+    glm::mat3 object_model2world_normalized{
+        glm::transpose(glm::inverse(object_model2world))};
+    program_object_phong.with_uniform("u_object_color", object_color);
+    program_object_phong.with_uniform("u_model2world", object_model2world);
+    program_object_phong.with_uniform("u_model2world_normalized",
+                                      object_model2world_normalized);
+    program_object_gouraud.with_uniform("u_object_color", object_color);
+    program_object_gouraud.with_uniform("u_model2world", object_model2world);
+    program_object_gouraud.with_uniform("u_model2world_normalized",
+                                        object_model2world_normalized);
   }
 
  private:
@@ -104,6 +113,9 @@ class Colors : public iphelf::opengl::Application {
     program_light.with_uniform("u_view2clip", view2clip);
     program_light.render(cube);
 
+    static bool use_phong{true};
+    auto &program_object =
+        use_phong ? program_object_phong : program_object_gouraud;
     program_object.with_uniform("u_light_pos",
                                 glm::vec3{rotated_light_model2world *
                                           glm::vec4{glm::vec3{0.0f}, 1.0f}});
@@ -134,6 +146,12 @@ class Colors : public iphelf::opengl::Application {
     }
 
     imgui.render([] {
+      {
+        if (ImGui::RadioButton("use phong shading", use_phong))
+          use_phong = true;
+        if (ImGui::RadioButton("use gouraud shading", !use_phong))
+          use_phong = false;
+      }
       ImGui::Checkbox("pause light rotation", &pause_phase_rotation);
       ImGui::Checkbox("pause light hue update", &pause_phase_hue);
       ImGui::Checkbox("specify light color", &specify_light_color);
