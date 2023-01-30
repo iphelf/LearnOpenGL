@@ -77,10 +77,6 @@ class Colors : public iphelf::opengl::Application {
     program_object.with_uniform(
         "u_model2world_normalized",
         glm::mat3{glm::transpose(glm::inverse(object_model2world))});
-    program_object.with_uniform("u_ambient_strength", 0.1f);
-    program_object.with_uniform("u_diffuse_strength", 1.0f);
-    program_object.with_uniform("u_specular_strength", 0.5f);
-    program_object.with_uniform("u_shininess", 32.0f);
   }
 
  private:
@@ -110,16 +106,38 @@ class Colors : public iphelf::opengl::Application {
     program_object.with_uniform("u_light_color", light_color);
     program_object.with_uniform("u_world2view", world2view);
     program_object.with_uniform("u_view2clip", view2clip);
+    static float ambient_strength{0.1f};
+    static float diffuse_strength{1.0f};
+    static float specular_strength{0.5f};
+    static float shininess{32.0f};
+    program_object.with_uniform("u_ambient_strength", ambient_strength);
+    program_object.with_uniform("u_diffuse_strength", diffuse_strength);
+    program_object.with_uniform("u_specular_strength", specular_strength);
+    program_object.with_uniform("u_shininess", shininess);
     program_object.render(cube);
 
-    static bool pause_phase{false};
-    if (just_released(iphelf::opengl::Key::Space)) pause_phase = !pause_phase;
-    if (!pause_phase) {
-      phase += delta_seconds() * 60.0f;
-      if (phase > 360.0f) phase -= 360.0f;
+    {
+      static bool pause_phase{false};
+      if (just_released(iphelf::opengl::Key::Space)) pause_phase = !pause_phase;
+      if (!pause_phase) {
+        phase += delta_seconds() * 60.0f;
+        if (phase > 360.0f) phase -= 360.0f;
+      }
     }
 
-    imgui.render([] { ImGui::ShowDemoWindow(); });
+    imgui.render([] {
+      ImGui::SliderFloat("ambient strength", &ambient_strength, 0.0f, 1.0f,
+                         "%.2f");
+      ImGui::SliderFloat("diffuse strength", &diffuse_strength, 0.0f, 1.0f,
+                         "%.2f");
+      ImGui::SliderFloat("specular strength", &specular_strength, 0.0f, 1.0f,
+                         "%.2f");
+      ImGui::SliderFloat("shininess", &shininess, 1.0f, 256.0f, "%.0f",
+                         ImGuiSliderFlags_Logarithmic);
+      static bool show_demo_window{false};
+      ImGui::Checkbox("show demo window", &show_demo_window);
+      if (show_demo_window) ImGui::ShowDemoWindow();
+    });
   }
 };
 
