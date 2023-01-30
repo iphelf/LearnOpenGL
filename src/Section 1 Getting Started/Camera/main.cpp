@@ -1,6 +1,5 @@
 #include <iphelf/opengl/application.h>
 
-#include <algorithm>
 #include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -55,7 +54,6 @@ class Camera : public iphelf::opengl::Application {
         },
         {3, 2});
   })};
-  const float velocity{1.0f};
   iphelf::opengl::Camera camera{
       create_camera(glm::vec3{0.0f}, {0, 0, 1}, {0, 1, 0})};
 
