@@ -18,9 +18,9 @@ const auto path_image_wall = path_textures / "wall.jpg";
 const auto path_maze = std::filesystem::current_path() / "maze.txt";
 
 class CoordinateSystems : public iphelf::opengl::Application {
-  const struct Level {
+  struct Level {
     // (row, column) / (z, x)
-    std::pair<std::size_t, std::size_t> size{1, 1};
+    std::pair<int, int> size{1, 1};
     // (row, column) / (z, x)
     std::pair<int, int> player_start{0, 0};
     std::vector<std::vector<bool>> is_block{};
@@ -29,13 +29,13 @@ class CoordinateSystems : public iphelf::opengl::Application {
       {
         std::ifstream fin{path};
         std::string line;
-        std::size_t i = 0;
+        int i = 0;
         bool player_found = false;
         while (std::getline(fin, line) && !line.empty()) {
           if (!player_found) {
-            if (std::size_t j = line.find('O'); j != std::string::npos) {
-              player_start.first = static_cast<int>(i);
-              player_start.second = static_cast<int>(j);
+            if (auto found{line.find('O')}; found != std::string::npos) {
+              player_start.first = i;
+              player_start.second = static_cast<int>(found);
               player_found = true;
             }
           }
@@ -45,27 +45,23 @@ class CoordinateSystems : public iphelf::opengl::Application {
                            [](char c) { return c == '#'; });
             return row;
           }));
-          size.second = std::max(size.second, line.size());
+          size.second = std::max(size.second, static_cast<int>(line.size()));
           ++i;
         }
       }
       // pad row-ends
       for (auto &row : is_block) {
-        if (row.size() < size.second)
+        if (std::ssize(row) < size.second)
           row.insert(row.end(), size.second - row.size(), false);
       }
-      size.first = is_block.size();
+      size.first = static_cast<int>(is_block.size());
     }
-  } level{path_maze};
+  } const level{path_maze};
   std::pair<int, int> player_location{level.player_start};
 
   glm::mat4 translate_on_gird(int i, int j) {
-    return glm::translate(identity,
-                          {(1 - static_cast<float>(level.size.second)) * 0.5f +
-                               static_cast<float>(j),
-                           0.5f,
-                           (1 - static_cast<float>(level.size.first)) * 0.5f +
-                               static_cast<float>(i)});
+    return glm::translate(identity, {(1 - level.size.second) * 0.5 + j, 0.5,
+                                     (1 - level.size.first) * 0.5 + i});
   }
 
   const iphelf::opengl::TriangleArray plane{
@@ -146,13 +142,12 @@ class CoordinateSystems : public iphelf::opengl::Application {
     blocks.reserve(std::accumulate(
         level.is_block.begin(), level.is_block.end(), 0,
         [](int acc, const auto &row) {
-          return acc + static_cast<int>(std::count_if(row.begin(), row.end(),
-                                                      std::identity{}));
+          return acc + std::count_if(row.begin(), row.end(), std::identity{});
         }));
-    glm::vec3 base{(1 - static_cast<float>(level.size.second)) * 0.5f, 0.5f,
-                   (1 - static_cast<float>(level.size.first)) * 0.5f};
-    for (size_t i = 0; i < level.size.first; ++i)
-      for (size_t j = 0; j < level.size.second; ++j)
+    glm::vec3 base{(1 - level.size.second) * 0.5, 0.5f,
+                   (1 - level.size.first) * 0.5};
+    for (int i{0}; i < level.size.first; ++i)
+      for (int j{0}; j < level.size.second; ++j)
         if (level.is_block[i][j])
           blocks.push_back(glm::translate(identity, base + glm::vec3{j, 0, i}));
     return blocks;
@@ -173,7 +168,7 @@ class CoordinateSystems : public iphelf::opengl::Application {
   const std::vector<float> aspect_ratios{
       1.0f, 4.0f / 3.0f, 8.0f / 5.0f, 16.0f / 9.0f, 2.0f,
   };
-  int i_aspect_ratio{1};
+  std::size_t i_aspect_ratio{1};
   glm::mat4 view2clip_perspective() {
     return glm::perspective(glm::radians(fov), aspect_ratios[i_aspect_ratio],
                             0.1f, 100.0f);
@@ -202,9 +197,8 @@ class CoordinateSystems : public iphelf::opengl::Application {
       if (di || dj) {
         int ti = player_location.first + di;
         int tj = player_location.second + dj;
-        if (0 <= ti && ti < static_cast<int>(level.size.first) && 0 <= tj &&
-            tj < static_cast<int>(level.size.second) &&
-            !level.is_block[ti][tj]) {
+        if (0 <= ti && ti < level.size.first && 0 <= tj &&
+            tj < level.size.second && !level.is_block[ti][tj]) {
           player_location.first = ti;
           player_location.second = tj;
           player_cube = translate_on_gird(ti, tj);
@@ -236,8 +230,7 @@ class CoordinateSystems : public iphelf::opengl::Application {
 
       // iterate through aspect ratios with TAB
       if (use_perspective && just_released(iphelf::opengl::Key::Tab)) {
-        i_aspect_ratio =
-            (i_aspect_ratio + 1) % static_cast<int>(aspect_ratios.size());
+        i_aspect_ratio = (i_aspect_ratio + 1) % aspect_ratios.size();
         need_to_refresh_view2clip = true;
       }
 
