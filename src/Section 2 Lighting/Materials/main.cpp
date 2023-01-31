@@ -77,7 +77,7 @@ class Materials : public iphelf::opengl::Application {
     // Source: http://devernay.free.fr/cours/opengl/materials.html
     const auto path_file{std::filesystem::current_path() /
                          "opengl_vrml_materials.txt"};
-    auto doc{rapidcsv::Document(path_file, rapidcsv::LabelParams(0, 0))};
+    rapidcsv::Document doc{path_file.string(), rapidcsv::LabelParams(0, 0)};
     std::vector<Material> ms;
     ms.reserve(doc.GetRowCount());
     for (auto name : doc.GetRowNames()) {
