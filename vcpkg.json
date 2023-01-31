@@ -13,6 +13,7 @@
         "glfw-binding",
         "opengl3-binding"
       ]
-    }
+    },
+    "rapidcsv"
   ]
 }

@@ -12,6 +12,8 @@ struct Color {
 
   Color(float red, float green, float blue) : r(red), g(green), b(blue) {}
 
+  Color operator*(float s) const { return {r * s, g * s, b * s}; }
+
   // Note:
   //   hue \in [0.0f, 360.0f]
   //   saturation, value \in [0.0f, 1.0f]
