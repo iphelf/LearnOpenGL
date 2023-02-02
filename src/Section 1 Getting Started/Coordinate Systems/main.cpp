@@ -259,7 +259,7 @@ class CoordinateSystems : public iphelf::opengl::Application {
   void render() override {
     handle_inputs();
 
-    clear(iphelf::opengl::Color::DarkGreenBluish);
+    clear(iphelf::opengl::Colors::DarkGreenBluish);
 
     program.bind_texture(image_wall);
     program.with_uniform("u_model2world", floor_plane);

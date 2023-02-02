@@ -39,7 +39,7 @@ class Shaders : public iphelf::opengl::Application {
 
  public:
   Shaders() : iphelf::opengl::Application(800, 600, "Shaders") {
-    background_color = iphelf::opengl::Color::DarkGreenBluish;
+    background_color = iphelf::opengl::Colors::DarkGreenBluish;
 
     // First quarter
     triangles_q1_white = create_triangle_array<2>({
@@ -86,12 +86,12 @@ class Shaders : public iphelf::opengl::Application {
   void render() override {
     clear(background_color);
 
-    program_uniform.with_uniform("ourColor", iphelf::opengl::Color::White);
+    program_uniform.with_uniform("ourColor", iphelf::opengl::Colors::White);
     program_uniform.render_wireframe(triangles_q1_white);
     program_uniform.with_uniform(
         "ourColor", {0, std::sin(elapsed_seconds()) / 2.0f + 0.5f, 0});
     program_uniform.render(triangles_q1_black);
-    program_uniform.with_uniform("ourColor", iphelf::opengl::Color::Orange);
+    program_uniform.with_uniform("ourColor", iphelf::opengl::Colors::Orange);
     program_uniform.render(triangles_q2_orange);
 
     program_position_as_color.render(triangles_c_position);

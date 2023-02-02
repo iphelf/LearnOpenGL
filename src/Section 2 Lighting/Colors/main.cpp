@@ -35,7 +35,7 @@ class Colors : public iphelf::opengl::Application {
     return model2world;
   })};
   const glm::mat4 object_model2world{1.0f};
-  const iphelf::opengl::Color object_color{iphelf::opengl::Color::Orange};
+  const iphelf::opengl::Color object_color{iphelf::opengl::Colors::Orange};
 
  public:
   Colors() : Application(800, 600, "Colors") {
@@ -48,7 +48,7 @@ class Colors : public iphelf::opengl::Application {
 
  private:
   void render() override {
-    clear(iphelf::opengl::Color::DarkGreenBluish);
+    clear(iphelf::opengl::Colors::DarkGreenBluish);
     auto view2clip{glm::perspective(glm::radians(camera.fov()), 800.0 / 600.0,
                                     0.1, 100.0)};
     auto world2view{camera.world2view()};

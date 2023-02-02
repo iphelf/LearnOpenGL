@@ -18,12 +18,14 @@ struct Color {
   //   hue \in [0.0f, 360.0f]
   //   saturation, value \in [0.0f, 1.0f]
   static Color from_hsv(float hue, float saturation, float value);
-
-  static const Color Black;
-  static const Color White;
-  static const Color DarkGreenBluish;
-  static const Color Orange;
-  static const Color Yellow;
 };
+
+namespace Colors {
+const Color Black{0.0f, 0.0f, 0.0f};
+const Color White{1.0f, 1.0f, 1.0f};
+const Color DarkGreenBluish{0.2f, 0.3f, 0.3f};
+const Color Orange{1.0f, 0.5f, 0.2f};
+const Color Yellow{1.0f, 0.0f, 1.0f};
+};  // namespace Colors
 
 }  // namespace iphelf::opengl

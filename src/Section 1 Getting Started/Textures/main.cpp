@@ -52,7 +52,7 @@ class Textures : public iphelf::opengl::Application {
 
  public:
   Textures() : iphelf::opengl::Application(800, 600, "Textures") {
-    background_color = iphelf::opengl::Color::DarkGreenBluish;
+    background_color = iphelf::opengl::Colors::DarkGreenBluish;
 
     program_image = create_program(path_vs_pos_uv, path_fs_image);
 
@@ -103,7 +103,7 @@ class Textures : public iphelf::opengl::Application {
         {2, 2});
     image_face_bordered = create_texture(
         path_image_face, iphelf::opengl::Texture::WrappingMode::ClampToBorder,
-        iphelf::opengl::Color::Yellow);
+        iphelf::opengl::Colors::Yellow);
 
     // edged container in the third quarter
     triangles_edged_container = create_triangle_array<4>(

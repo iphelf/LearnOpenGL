@@ -36,7 +36,7 @@ class Transformations : public iphelf::opengl::Application {
 
  private:
   void render() override {
-    clear(iphelf::opengl::Color::Orange);
+    clear(iphelf::opengl::Colors::Orange);
 
     program.bind_texture(texture);
 

@@ -19,7 +19,7 @@ class LightingMaps : public iphelf::opengl::Application {
   const iphelf::opengl::Texture texture_cover{
       create_texture(path_textures / "matrix.jpg",
                      iphelf::opengl::Texture::WrappingMode::ClampToBorder,
-                     iphelf::opengl::Color::Black)};
+                     iphelf::opengl::Colors::Black)};
   const iphelf::opengl::TriangleArray cube{std::invoke([] {
     return create_triangle_array<8>(
         {
@@ -86,7 +86,7 @@ class LightingMaps : public iphelf::opengl::Application {
 
  private:
   void render() override {
-    clear(iphelf::opengl::Color::DarkGreenBluish);
+    clear(iphelf::opengl::Colors::DarkGreenBluish);
 
     auto view2clip{glm::perspective(glm::radians(camera.fov()), 800.0 / 600.0,
                                     0.1, 100.0)};
@@ -94,8 +94,7 @@ class LightingMaps : public iphelf::opengl::Application {
 
     static float phase_hue{0.0f};
     static bool specify_light_color{true};
-    static iphelf::opengl::Color specified_light_color{
-        iphelf::opengl::Color::White};
+    static auto specified_light_color{iphelf::opengl::Colors::White};
     auto light_color{specify_light_color ? specified_light_color
                                          : iphelf::opengl::Color::from_hsv(
                                                phase_hue, 1.0f, 1.0f)};

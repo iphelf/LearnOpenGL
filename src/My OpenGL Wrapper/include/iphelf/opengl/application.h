@@ -59,7 +59,7 @@ class Application {
   static inline Texture create_texture(
       const std::filesystem::path &path_texture,
       Texture::WrappingMode wrapping_mode = Texture::WrappingMode::ClampToEdge,
-      Color border_color = Color::Black,
+      Color border_color = Colors::Black,
       Texture::FilterType filter_type = Texture::FilterType::Linear) {
     return {path_texture, filter_type, wrapping_mode, border_color};
   }
@@ -67,7 +67,7 @@ class Application {
   static inline Texture create_texture(
       const std::filesystem::path &path_texture,
       Texture::WrappingMode wrapping_mode, Texture::FilterType filter_type) {
-    return {path_texture, filter_type, wrapping_mode, Color::Black};
+    return {path_texture, filter_type, wrapping_mode, Colors::Black};
   }
 
   static inline Camera create_camera(const glm::vec3 &pos, const glm::vec3 &up,

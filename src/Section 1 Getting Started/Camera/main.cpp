@@ -66,7 +66,7 @@ class Camera : public iphelf::opengl::Application {
 
  private:
   void render() override {
-    clear(iphelf::opengl::Color::DarkGreenBluish);
+    clear(iphelf::opengl::Colors::DarkGreenBluish);
 
     program.bind_texture(image);
     program.with_uniform("u_view2clip",

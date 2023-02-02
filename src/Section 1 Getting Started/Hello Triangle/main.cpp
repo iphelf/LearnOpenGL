@@ -18,7 +18,7 @@ class HelloTriangle : public iphelf::opengl::Application {
 
  public:
   HelloTriangle() : iphelf::opengl::Application(800, 600, "Hello, Triangle") {
-    background_color = iphelf::opengl::Color::DarkGreenBluish;
+    background_color = iphelf::opengl::Colors::DarkGreenBluish;
     triangles_a = create_triangle_array<2>(
         {
             {0.5f, 0.5f},    // top right
