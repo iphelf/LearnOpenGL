@@ -5,7 +5,12 @@
     "opengl",
     "glfw3",
     "glm",
-    "glad",
+    {
+      "name": "glad",
+      "features": [
+        "extensions"
+      ]
+    },
     "stb",
     {
       "name": "imgui",

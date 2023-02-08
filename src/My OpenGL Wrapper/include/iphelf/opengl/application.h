@@ -3,6 +3,7 @@
 #include <chrono>
 #include <filesystem>
 #include <functional>
+#include <map>
 #include <memory>
 
 #include "camera.h"
@@ -54,6 +55,21 @@ class Application {
       const std::filesystem::path &path_vertex_shader,
       const std::filesystem::path &path_fragment_shader) {
     return {path_vertex_shader, path_fragment_shader};
+  }
+
+  static inline Program create_program(
+      const std::filesystem::path &path_vertex_shader,
+      const std::map<std::string, std::filesystem::path>
+          &vertex_shader_includes,
+      const std::filesystem::path &path_fragment_shader,
+      const std::map<std::string, std::filesystem::path>
+          &fragment_shader_includes) {
+    return {
+        path_vertex_shader,
+        vertex_shader_includes,
+        path_fragment_shader,
+        fragment_shader_includes,
+    };
   }
 
   static inline Texture create_texture(

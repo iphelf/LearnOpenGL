@@ -3,29 +3,79 @@
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <regex>
 
 #include "external/gl.h"
 #include "shader.h"
 
 namespace iphelf::opengl {
 
+namespace {
+
+std::string read_file(const std::filesystem::path &path) {
+  if (!std::filesystem::is_regular_file(path))
+    throw std::runtime_error("Shader file \"" + path.string() +
+                             "\" does not exist.");
+  std::ostringstream oss;
+  oss << std::ifstream(path).rdbuf();
+  return oss.str();
+}
+
+std::map<std::string, std::string> read_includes(
+    const std::map<std::string, std::filesystem::path> &includes) {
+  std::map<std::string, std::string> read;
+  for (auto [v_path, path] : includes) read[v_path] = read_file(path);
+  return read;
+}
+
+std::string preprocess_directive_include(
+    const std::string &source,
+    const std::map<std::string, std::string> &includes) {
+  std::ostringstream oss;
+  std::regex pattern{
+      R"raw(^\s*#include\s*"([^"]+)"\s*$)raw",
+      std::regex_constants::ECMAScript | std::regex_constants::multiline};
+  std::sregex_iterator matches_begin{source.begin(), source.end(), pattern};
+  std::sregex_iterator matches_end;
+  auto last_match_end{source.begin()};
+  for (auto it{matches_begin}; it != matches_end; ++it) {
+    auto &match{*it};
+    auto v_path{match.str(1)};
+    if (auto found{includes.find(v_path)}; found != includes.end()) {
+      auto match_begin{source.begin() + match.position()};
+      auto match_end{match_begin + match.length()};
+      std::copy(last_match_end, match_begin, std::ostreambuf_iterator{oss});
+      oss << found->second;
+      last_match_end = match_end;
+    }
+  }
+  std::copy(last_match_end, source.end(), std::ostreambuf_iterator{oss});
+  return oss.str();
+}
+
+}  // namespace
+
 Program::Program(const std::filesystem::path &path_vertex_shader,
                  const std::filesystem::path &path_fragment_shader) {
-  auto read_file = [](const std::filesystem::path &path) {
-    if (!std::filesystem::is_regular_file(path))
-      throw std::runtime_error("Shader file \"" + path.string() +
-                               "\" does not exist.");
-    std::ostringstream oss;
-    oss << std::ifstream(path).rdbuf();
-    return oss.str();
-  };
-  // load vertex shader
-  const std::string source_vertex_shader = read_file(path_vertex_shader);
-  auto vertex_shader = VertexShader(source_vertex_shader);
-  // load fragment shader
-  const std::string source_fragment_shader = read_file(path_fragment_shader);
-  auto fragment_shader = FragmentShader(source_fragment_shader);
+  VertexShader vertex_shader{read_file(path_vertex_shader)};
+  FragmentShader fragment_shader{read_file(path_fragment_shader)};
+  shader_program = gl().create_program_object();
+  gl().attach_shader(shader_program, vertex_shader.shader);
+  gl().attach_shader(shader_program, fragment_shader.shader);
+  gl().link_program(shader_program);
+}
 
+Program::Program(
+    const std::filesystem::path &path_vertex_shader,
+    const std::map<std::string, std::filesystem::path> &vertex_shader_includes,
+    const std::filesystem::path &path_fragment_shader,
+    const std::map<std::string, std::filesystem::path>
+        &fragment_shader_includes) {
+  VertexShader vertex_shader{preprocess_directive_include(
+      read_file(path_vertex_shader), read_includes(vertex_shader_includes))};
+  FragmentShader fragment_shader{
+      preprocess_directive_include(read_file(path_fragment_shader),
+                                   read_includes(fragment_shader_includes))};
   shader_program = gl().create_program_object();
   gl().attach_shader(shader_program, vertex_shader.shader);
   gl().attach_shader(shader_program, fragment_shader.shader);

@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <glm/fwd.hpp>
+#include <map>
 
 #include "color.h"
 #include "texture.h"
@@ -16,6 +17,13 @@ class Program {
 
   Program(const std::filesystem::path &path_vertex_shader,
           const std::filesystem::path &path_fragment_shader);
+
+  Program(const std::filesystem::path &path_vertex_shader,
+          const std::map<std::string, std::filesystem::path>
+              &vertex_shader_includes,
+          const std::filesystem::path &path_fragment_shader,
+          const std::map<std::string, std::filesystem::path>
+              &fragment_shader_includes);
 
   void use() const;
   [[nodiscard]] int get_uniform_location(const std::string &name) const;
