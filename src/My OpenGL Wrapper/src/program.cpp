@@ -1,9 +1,9 @@
 #include <iphelf/opengl/program.h>
 
+#include <boost/regex.hpp>
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
-#include <regex>
 
 #include "external/gl.h"
 #include "shader.h"
@@ -32,11 +32,10 @@ std::string preprocess_directive_include(
     const std::string &source,
     const std::map<std::string, std::string> &includes) {
   std::ostringstream oss;
-  std::regex pattern{
-      R"raw(^\s*#include\s*"([^"]+)"\s*$)raw",
-      std::regex_constants::ECMAScript | std::regex_constants::multiline};
-  std::sregex_iterator matches_begin{source.begin(), source.end(), pattern};
-  std::sregex_iterator matches_end;
+  boost::regex pattern{R"raw(^\s*#include\s*"([^"]+)"\s*$)raw",
+                       boost::regex_constants::ECMAScript};
+  boost::sregex_iterator matches_begin{source.begin(), source.end(), pattern};
+  boost::sregex_iterator matches_end;
   auto last_match_end{source.begin()};
   for (auto it{matches_begin}; it != matches_end; ++it) {
     auto &match{*it};
