@@ -1,4 +1,4 @@
-add_subdirectory("Colors")
-add_subdirectory("Basic Lighting")
-add_subdirectory("Materials")
-add_subdirectory("Lighting maps")
+add_subdirectory("Chapter 08 Colors")
+add_subdirectory("Chapter 09 Basic Lighting")
+add_subdirectory("Chapter 10 Materials")
+add_subdirectory("Chapter 11 Lighting maps")

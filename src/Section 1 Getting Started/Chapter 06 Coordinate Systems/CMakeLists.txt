@@ -1,5 +1,5 @@
-add_executable(s1-coordinate-systems main.cpp)
-target_link_libraries(s1-coordinate-systems iphelf-opengl)
+add_executable(s1c06-coordinate-systems main.cpp)
+target_link_libraries(s1c06-coordinate-systems iphelf-opengl)
 file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY textures DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY maze.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
