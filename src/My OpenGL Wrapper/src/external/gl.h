@@ -65,8 +65,8 @@ class GL {
   void delete_shader_object(int so);
   void send_shader_source(int so, const std::string &source);
   void compile_shader(int so);
-  [[deprecated]] void compile_shader_with_include(
-      int so, const std::map<std::string, std::string> &included_sources);
+  //  [[deprecated]] void compile_shader_with_include(
+  //      int so, const std::map<std::string, std::string> &included_sources);
   int create_program_object();
   void delete_program_object(int po);
   void attach_shader(int po, int so);

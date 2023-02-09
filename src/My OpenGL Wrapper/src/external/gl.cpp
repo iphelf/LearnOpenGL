@@ -227,41 +227,42 @@ void GL::compile_shader(int so) {
   }
 }
 
-void GL::compile_shader_with_include(
-    int so, const std::map<std::string, std::string> &included_sources) {
-  {
-    // add virtual paths bound with included sources
-    std::vector<const char *> v_paths;
-    v_paths.reserve(included_sources.size());
-    for (auto &[v_path, source] : included_sources) {
-      glNamedStringARB(GL_SHADER_INCLUDE_ARB, static_cast<GLint>(v_path.size()),
-                       v_path.c_str(), static_cast<GLint>(source.size()),
-                       source.c_str());
-      v_paths.push_back(v_path.c_str());
-    }
-
-    // compile with virtual paths
-    glCompileShaderIncludeARB(so, static_cast<GLsizei>(v_paths.size()),
-                              v_paths.data(), nullptr);
-    //    auto search_path{"/"};
-    //    glCompileShaderIncludeARB(so, 1, &search_path, nullptr);
-
-    // delete virtual paths
-    for (auto &p : included_sources)
-      glDeleteNamedStringARB(static_cast<GLint>(p.first.size()),
-                             p.first.c_str());
-  }
-  GLint success;
-  glGetShaderiv(so, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    const int info_size = 512;
-    char info_log[info_size];
-    glGetShaderInfoLog(so, info_size, nullptr, info_log);
-    std::cerr << info_log << '\n' << so << '\n';
-    throw std::runtime_error("Failed to compile shader source");
-  }
-  // TODO: fix link error
-}
+// void GL::compile_shader_with_include(
+//     int so, const std::map<std::string, std::string> &included_sources) {
+//   {
+//     // add virtual paths bound with included sources
+//     std::vector<const char *> v_paths;
+//     v_paths.reserve(included_sources.size());
+//     for (auto &[v_path, source] : included_sources) {
+//       glNamedStringARB(GL_SHADER_INCLUDE_ARB,
+//       static_cast<GLint>(v_path.size()),
+//                        v_path.c_str(), static_cast<GLint>(source.size()),
+//                        source.c_str());
+//       v_paths.push_back(v_path.c_str());
+//     }
+//
+//     // compile with virtual paths
+//     glCompileShaderIncludeARB(so, static_cast<GLsizei>(v_paths.size()),
+//                               v_paths.data(), nullptr);
+//     //    auto search_path{"/"};
+//     //    glCompileShaderIncludeARB(so, 1, &search_path, nullptr);
+//
+//     // delete virtual paths
+//     for (auto &p : included_sources)
+//       glDeleteNamedStringARB(static_cast<GLint>(p.first.size()),
+//                              p.first.c_str());
+//   }
+//   GLint success;
+//   glGetShaderiv(so, GL_COMPILE_STATUS, &success);
+//   if (!success) {
+//     const int info_size = 512;
+//     char info_log[info_size];
+//     glGetShaderInfoLog(so, info_size, nullptr, info_log);
+//     std::cerr << info_log << '\n' << so << '\n';
+//     throw std::runtime_error("Failed to compile shader source");
+//   }
+//   // TODO: fix link error
+// }
 
 int GL::create_program_object() { return glCreateProgram(); }
 
