@@ -14,7 +14,7 @@ struct Application::Impl {
   struct CameraController {
     Camera &camera;
     bool moving{false};
-    const float velocity{1.0f};
+    const float velocity{3.0f};
     explicit CameraController(Camera &camera) : camera{camera} {}
     void cursor_pos_callback(double x, double y) {
       static double last_x{x};
@@ -25,7 +25,12 @@ struct Application::Impl {
       last_x = x;
       last_y = y;
     }
-    void scroll_callback(double, double offset_y) { camera.zoom(offset_y); }
+    void scroll_callback(double, double offset_y) {
+      if (offset_y < 0)
+        camera.zoom_out();
+      else if (offset_y > 0)
+        camera.zoom_in();
+    }
     void handle_inputs(Application &app) {
       moving = app.is_down(iphelf::opengl::MouseButton::R);
       if (moving) {
@@ -47,8 +52,6 @@ struct Application::Impl {
           camera.ascend(static_cast<float>(up) * v);
       } else if (app.just_released(iphelf::opengl::MouseButton::R))
         app.enable_cursor_capture(false);
-      if (app.just_released(iphelf::opengl::MouseButton::M))
-        camera.reset_zoom();
     }
   };
   std::unique_ptr<CameraController> camera_controller{nullptr};

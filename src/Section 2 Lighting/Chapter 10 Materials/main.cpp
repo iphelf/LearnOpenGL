@@ -10,8 +10,8 @@ const auto path_shaders{std::filesystem::current_path() / "shaders"};
 
 class Materials : public iphelf::opengl::Application {
   iphelf::opengl::Camera camera{
-      create_camera(glm::vec3{2.0f, -2.0f, 2.0f}, {0.0f, 0.0f, 1.0f},
-                    {-1.0f, 1.0f, -1.0f}, 0.0f, -20.0f)};
+      create_camera(glm::vec3{2.0f, -2.0f, 2.0f},
+                    {{0.0f, 0.0f, 1.0f}, {-1.0f, 1.0f, -1.0f}, 0.0f, -20.0f})};
   const iphelf::opengl::Program program_light{create_program(
       path_shaders / "light.v.glsl", path_shaders / "light.f.glsl")};
   const iphelf::opengl::Program program_object{create_program(
@@ -65,7 +65,6 @@ class Materials : public iphelf::opengl::Application {
     return model2world;
   })};
   const glm::mat4 object_model2world{1.0f};
-  const iphelf::opengl::Color object_color{iphelf::opengl::Colors::Orange};
   struct Material {
     std::string name;
     glm::vec3 ambient;
@@ -108,8 +107,7 @@ class Materials : public iphelf::opengl::Application {
   void render() override {
     clear(iphelf::opengl::Colors::Black);
 
-    auto view2clip{glm::perspective(glm::radians(camera.fov()), 800.0 / 600.0,
-                                    0.1, 100.0)};
+    auto view2clip{camera.view2clip()};
     auto world2view{camera.world2view()};
     static float phase_hue{0.0f};
     static bool specify_light_color{false};
@@ -129,7 +127,7 @@ class Materials : public iphelf::opengl::Application {
     program_light.with_uniform("u_view2clip", view2clip);
     program_light.render(cube);
 
-    program_object.with_uniform("u_camera_pos", camera.pos());
+    program_object.with_uniform("u_camera_pos", camera.position());
     program_object.with_uniform("u_light.position",
                                 glm::vec3{rotated_light_model2world *
                                           glm::vec4{glm::vec3{0.0f}, 1.0f}});

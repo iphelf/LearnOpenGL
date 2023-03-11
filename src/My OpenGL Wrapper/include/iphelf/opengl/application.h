@@ -86,11 +86,11 @@ class Application {
     return {path_texture, filter_type, wrapping_mode, Colors::Black};
   }
 
-  static inline Camera create_camera(const glm::vec3 &pos, const glm::vec3 &up,
-                                     const glm::vec3 &front, float yaw = 0.0f,
-                                     float pitch = 0.0f,
-                                     float sensitivity = 0.1f) {
-    return {pos, up, front, yaw, pitch, sensitivity};
+  static inline Camera create_camera(
+      const glm::vec3 &position, const Camera::Orientation &orientation,
+      const Camera::Frustum &frustum = {},
+      const Camera::Sensitivity &sensitivity = {}) {
+    return {position, orientation, frustum, sensitivity};
   }
 
   // handle inputs

@@ -8,8 +8,8 @@ const auto path_shaders{std::filesystem::current_path() / "shaders"};
 
 class Colors : public iphelf::opengl::Application {
   iphelf::opengl::Camera camera{
-      create_camera(glm::vec3{2.0f, -2.0f, 2.0f}, {0.0f, 0.0f, 1.0f},
-                    {-1.0f, 1.0f, -1.0f}, 0.0f, -20.0f)};
+      create_camera(glm::vec3{2.0f, -2.0f, 2.0f},
+                    {{0.0f, 0.0f, 1.0f}, {-1.0f, 1.0f, -1.0f}, 0.0f, -20.0f})};
   const iphelf::opengl::Program program_light{create_program(
       path_shaders / "light.v.glsl", path_shaders / "light.f.glsl")};
   const iphelf::opengl::Program program_object{create_program(
@@ -49,8 +49,7 @@ class Colors : public iphelf::opengl::Application {
  private:
   void render() override {
     clear(iphelf::opengl::Colors::DarkGreenBluish);
-    auto view2clip{glm::perspective(glm::radians(camera.fov()), 800.0 / 600.0,
-                                    0.1, 100.0)};
+    auto view2clip{camera.view2clip()};
     auto world2view{camera.world2view()};
     static float hue{0.0f};
     auto light_color{iphelf::opengl::Color::from_hsv(hue, 1.0f, 1.0f)};

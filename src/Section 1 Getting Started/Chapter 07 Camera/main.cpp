@@ -55,7 +55,7 @@ class Camera : public iphelf::opengl::Application {
         {3, 2});
   })};
   iphelf::opengl::Camera camera{
-      create_camera(glm::vec3{0.0f}, {0, 0, 1}, {0, 1, 0})};
+      create_camera(glm::vec3{0.0f}, {{0, 1, 0}, {0, 0, 1}})};
 
  public:
   Camera() : Application(800, 600, "Camera") {
@@ -69,9 +69,7 @@ class Camera : public iphelf::opengl::Application {
     clear(iphelf::opengl::Colors::DarkGreenBluish);
 
     program.bind_texture(image);
-    program.with_uniform("u_view2clip",
-                         glm::perspective(glm::radians(camera.fov()),
-                                          800.0 / 600.0, 0.1, 100.0));
+    program.with_uniform("u_view2clip", camera.view2clip());
     program.with_uniform("u_world2view", camera.world2view());
     program.render(cube);
   }

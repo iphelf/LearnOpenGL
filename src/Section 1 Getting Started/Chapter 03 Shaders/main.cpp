@@ -89,7 +89,8 @@ class Shaders : public iphelf::opengl::Application {
     program_uniform.with_uniform("ourColor", iphelf::opengl::Colors::White);
     program_uniform.render_wireframe(triangles_q1_white);
     program_uniform.with_uniform(
-        "ourColor", {0, std::sin(elapsed_seconds()) / 2.0f + 0.5f, 0});
+        "ourColor",
+        iphelf::opengl::Color{0, std::sin(elapsed_seconds()) / 2.0f + 0.5f, 0});
     program_uniform.render(triangles_q1_black);
     program_uniform.with_uniform("ourColor", iphelf::opengl::Colors::Orange);
     program_uniform.render(triangles_q2_orange);

@@ -1,52 +1,52 @@
 #include <iphelf/opengl/camera.h>
 
 #include <algorithm>
-#include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace iphelf::opengl {
 
 struct Camera::Impl {
-  // x: right, y: forward, z: up
-  static constexpr glm::vec3 movement(float forward, float right, float up) {
-    return {right, forward, up};
+  // x: right, y: up, z: -forward
+
+  glm::vec3 position;           // world
+  const glm::vec3 up;           // world
+  glm::vec3 right;              // world
+  glm::vec3 front;              // world
+  const glm::mat3 orientation;  // local to world rotation matrix
+  float yaw{0.0f};              // in degrees
+  float pitch{0.0f};            // in degrees
+  const glm::mat4 view2clip;
+  const Camera::Sensitivity sensitivity;
+  Impl(const glm::vec3& position, const Orientation& orientation,
+       const Frustum& frustum, const Sensitivity& sensitivity)
+      : position{position},
+        up{glm::normalize(orientation.up)},
+        right{glm::normalize(glm::cross(orientation.front, up))},
+        front{glm::cross(up, right)},
+        orientation{glm::mat3{right, up, -front}},
+        view2clip{glm::perspective(
+            glm::radians(std::clamp(frustum.fov, 0.01f, 180.0f)),
+            frustum.aspect, frustum.near, frustum.far)},
+        sensitivity{sensitivity} {
+    set_yaw_pitch(orientation.yaw, orientation.pitch);
   }
-  static constexpr glm::vec3 direction(float yaw, float pitch) {
+  void set_yaw_pitch(float new_yaw, float new_pitch) {
+    yaw = std::fmod(new_yaw, 720.0f);
+    pitch = std::clamp(new_pitch, -89.9f, 89.9f);
     float yaw_r{glm::radians(yaw)};
     float pitch_r{glm::radians(pitch)};
-    return movement(glm::cos(yaw_r) * glm::cos(pitch_r),
-                    glm::sin(yaw_r) * glm::cos(pitch_r), glm::sin(pitch_r));
+    front = orientation * glm::vec3{glm::sin(yaw_r) * glm::cos(pitch_r),
+                                    glm::sin(pitch_r),
+                                    -glm::cos(yaw_r) * glm::cos(pitch_r)};
   }
-
-  glm::vec3 pos;                // world
-  const glm::vec3 up;           // world
-  glm::vec3 front;              // world
-  const glm::mat3 orientation;  // local to world
-  float yaw;                    // in degrees (default when without suffix)
-  float pitch;                  // in degrees (default when without suffix)
-  const float sensitivity;
-  const double default_fov{45.0};
-  double fov{default_fov};
-  Impl(const glm::vec3& pos, const glm::vec3& up, const glm::vec3& front,
-       float yaw, float pitch, float rotation_sensitivity)
-      : pos{pos},
-        up{glm::normalize(up)},
-        front{glm::normalize(glm::cross(this->up, glm::cross(front, up)))},
-        orientation{glm::mat3{glm::cross(this->front, this->up), this->front,
-                              this->up}},
-        yaw{yaw},
-        pitch{pitch},
-        sensitivity{rotation_sensitivity} {
-    recompute_front();
-  }
-  void recompute_front() { front = orientation * direction(yaw, pitch); }
 };
 
-Camera::Camera(const glm::vec3& pos, const glm::vec3& up,
-               const glm::vec3& front, float yaw, float pitch,
-               float sensitivity)
-    : self{std::make_unique<Impl>(pos, up, front, yaw, pitch, sensitivity)} {}
+Camera::Camera(const glm::vec3& position,
+               const Camera::Orientation& orientation, const Frustum& frustum,
+               const Camera::Sensitivity& sensitivity)
+    : self{std::make_unique<Impl>(position, orientation, frustum,
+                                  sensitivity)} {}
 
 Camera::Camera(Camera&& other) noexcept : self{nullptr} {
   *this = std::move(other);
@@ -59,45 +59,52 @@ Camera& Camera::operator=(Camera&& other) noexcept {
 
 Camera::~Camera() = default;
 
-void Camera::rotate(float delta_yaw, float delta_pitch, bool constrained) {
-  // rotate with respect to current front direction
-  delta_yaw *= self->sensitivity;
-  delta_pitch *= self->sensitivity;
-  self->yaw = std::invoke([yaw = self->yaw + delta_yaw] {
-    if (yaw > 720) return yaw - 720;
-    if (yaw < -720) return yaw + 720;
-    return yaw;
-  });
-  self->pitch += delta_pitch;
-  if (constrained) self->pitch = std::clamp(self->pitch, -89.9f, 89.9f);
-  self->recompute_front();
+std::pair<float, float> Camera::rotation() const {
+  return {self->yaw, self->pitch};
+}
+
+void Camera::set_rotation(float yaw, float pitch) {
+  self->set_yaw_pitch(yaw, pitch);
+}
+
+void Camera::rotate(float delta_yaw, float delta_pitch) {
+  self->set_yaw_pitch(self->yaw + delta_yaw * self->sensitivity.rotate,
+                      self->pitch + delta_pitch * self->sensitivity.rotate);
+}
+
+glm::vec3 Camera::position() const { return self->position; }
+
+void Camera::set_position(const glm::vec3& position) {
+  self->position = position;
 }
 
 void Camera::move(float delta_forward, float delta_right) {
-  // move with respect to current front direction
-  self->pos += self->front * delta_forward;
-  auto right{glm::normalize(glm::cross(self->front, self->up))};
-  self->pos += right * delta_right;
+  self->position += self->front * delta_forward * self->sensitivity.move;
+  self->position += glm::normalize(glm::cross(self->front, self->up)) *
+                    delta_right * self->sensitivity.move;
 }
 
 void Camera::ascend(float delta_up) {
-  // move with respect to the vertical up
-  self->pos += self->up * delta_up;
+  self->position += self->up * delta_up * self->sensitivity.move;
 }
 
-void Camera::zoom(double delta) {
-  const double zoom_sensitivity{5};
-  self->fov = std::clamp(self->fov - delta * zoom_sensitivity, 5.0, 90.0);
+void Camera::zoom_in() {
+  self->position +=
+      self->front * self->sensitivity.zoom_step * self->sensitivity.move;
 }
 
-void Camera::reset_zoom() { self->fov = self->default_fov; }
-
-glm::vec3 Camera::pos() const { return self->pos; }
+void Camera::zoom_out() {
+  self->position -=
+      self->front * self->sensitivity.zoom_step * self->sensitivity.move;
+}
 
 glm::mat4 Camera::world2view() const {
-  return glm::lookAt(self->pos, self->pos + self->front, self->up);
+  // measure which is better: compute on input, or compute at each frame
+  return glm::lookAt(self->position, self->position + self->front, self->up);
 }
 
-double Camera::fov() const { return self->fov; }
+glm::mat4 Camera::view2clip() const { return self->view2clip; }
+
+glm::mat4 Camera::world2clip() const { return world2view() * self->view2clip; }
 
 }  // namespace iphelf::opengl
