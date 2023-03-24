@@ -47,6 +47,8 @@ class Camera {
   void move(float delta_forward, float delta_right);
   void ascend(float delta_up);
 
+  [[nodiscard]] glm::mat4 model2world() const;
+
   /// move forward by a zoom_step
   void zoom_in();
   /// move backward by a zoom_step

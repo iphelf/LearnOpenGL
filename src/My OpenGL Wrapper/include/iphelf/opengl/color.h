@@ -26,6 +26,7 @@ const Color White{1.0f, 1.0f, 1.0f};
 const Color DarkGreenBluish{0.2f, 0.3f, 0.3f};
 const Color Orange{1.0f, 0.5f, 0.2f};
 const Color Yellow{1.0f, 0.0f, 1.0f};
+const Color Dark{0.07f};
 };  // namespace Colors
 
 }  // namespace iphelf::opengl

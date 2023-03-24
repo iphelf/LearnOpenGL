@@ -11,7 +11,7 @@ struct Camera::Impl {
 
   glm::vec3 position;           // world
   const glm::vec3 up;           // world
-  glm::vec3 right;              // world
+  const glm::vec3 right;        // world
   glm::vec3 front;              // world
   const glm::mat3 orientation;  // local to world rotation matrix
   float yaw{0.0f};              // in degrees
@@ -86,6 +86,16 @@ void Camera::move(float delta_forward, float delta_right) {
 
 void Camera::ascend(float delta_up) {
   self->position += self->up * delta_up * self->sensitivity.move;
+}
+
+glm::mat4 Camera::model2world() const {
+  glm::mat4 transform;
+  transform[3] = glm::vec4{self->position, 1.0f};
+  transform[2] = glm::vec4{-self->front, 0.0f};
+  auto side{glm::normalize(glm::cross(self->front, self->up))};
+  transform[0] = glm::vec4{side, 0.0f};
+  transform[1] = glm::vec4{glm::cross(side, self->front), 0.0f};
+  return transform;
 }
 
 void Camera::zoom_in() {
