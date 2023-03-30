@@ -20,7 +20,7 @@ struct Material {
   }
 };
 
-class LightCasters : public iphelf::opengl::Application {
+class MultipleLights : public iphelf::opengl::Application {
   const iphelf::opengl::Program program_light{create_program(
       path_shaders / "light.v.glsl", path_shaders / "light.f.glsl")};
 
@@ -139,7 +139,7 @@ class LightCasters : public iphelf::opengl::Application {
   iphelf::imgui::Instance imgui{get_glfw_window()};
 
  public:
-  LightCasters() : Application(800, 600, "Light casters") {
+  MultipleLights() : Application(800, 600, "Multiple lights") {
     enable_depth_test();
     bind_default_camera_controller(camera);
     imgui.install_callbacks();
@@ -174,6 +174,6 @@ class LightCasters : public iphelf::opengl::Application {
 };
 
 int main() {
-  LightCasters application;
+  MultipleLights application;
   application.run();
 }
